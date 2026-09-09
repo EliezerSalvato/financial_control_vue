@@ -1,0 +1,53 @@
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  font-weight: normal;
+}
+
+@media screen and (max-width: 768px) {
+  #app {
+    padding: 0 0.5rem;
+  }
+}
+
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+.nav-footer .content {
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.notification {
+  margin: 0 0 10px !important;
+}
+
+.notification.is-success {
+  color: #257942 !important;
+  background-color: #effaf3 !important;
+}
+
+.notification.is-danger {
+  color: #cc0f35 !important;
+  background-color: #feecf0 !important;
+}
+
+.columns:last-child {
+  margin-bottom: 5px !important;
+}
+
+.field:has(a) {
+  margin-bottom: 1px !important;
+}
+
+.form-actions {
+  margin-top: 15px;
+}
