@@ -1,9 +1,7 @@
-export type { MessageSuccessResponseApi } from '@/types/api';
+import type { YearMonth } from '@/types/api';
 
 export type SettlementProcessingPayload = {
-  settlement: {
-    month: number;
-    year: number;
+  settlement: YearMonth & {
     referenceDate: string | null;
   };
 };

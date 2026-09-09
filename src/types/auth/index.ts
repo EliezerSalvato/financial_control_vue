@@ -5,10 +5,4 @@ export type {
   AuthenticationSuccessResponseApi,
   LoginForm,
 } from './authentication';
-export type {
-  SessionRefreshPayload,
-  SessionRefreshPayloadApi,
-  SessionRefreshSuccessResponse,
-  SessionRefreshSuccessResponseApi,
-  SessionRevokeSuccessResponse,
-} from './session';
+export type { SessionRefreshPayload, SessionRefreshPayloadApi, SessionRefreshSuccessResponse, SessionRefreshSuccessResponseApi } from './session';

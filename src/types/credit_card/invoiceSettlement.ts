@@ -1,3 +1,5 @@
+import type { CollectionListResult, JsonApiResource, JsonApiUnpaginatedCollectionResponse, YearMonth } from '@/types/api';
+
 export type InvoiceSettlement = {
   id: string;
   creditCardId: string;
@@ -22,23 +24,10 @@ export type InvoiceSettlementAttributesApi = {
   settledOn: string;
 };
 
-export type InvoiceSettlementResourceItemApi = {
-  id: string;
-  type: 'credit_card_invoice_settlement';
-  attributes: InvoiceSettlementAttributesApi;
-};
+export type InvoiceSettlementResourceItemApi = JsonApiResource<'credit_card_invoice_settlement', InvoiceSettlementAttributesApi>;
 
-export type InvoiceSettlementCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: InvoiceSettlementResourceItemApi[];
-};
+export type InvoiceSettlementCollectionResponseApi = JsonApiUnpaginatedCollectionResponse<InvoiceSettlementResourceItemApi>;
 
-export type InvoiceSettlementListParams = {
-  month: number;
-  year: number;
-};
+export type InvoiceSettlementListParams = YearMonth;
 
-export type InvoiceSettlementListResult = {
-  invoiceSettlements: InvoiceSettlement[];
-};
+export type InvoiceSettlementListResult = CollectionListResult<'invoiceSettlements', InvoiceSettlement>;

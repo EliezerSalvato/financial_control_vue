@@ -14,7 +14,6 @@ export type {
   TransactionListFilters,
   TransactionListParams,
   TransactionListResult,
-  MessageSuccessResponseApi,
   TransactionForm,
   TransactionCreatePayload,
   TransactionUpdatePayload,

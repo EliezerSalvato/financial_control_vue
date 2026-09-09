@@ -1,4 +1,5 @@
 import type { AppLocale } from '@/locales/locale';
+import type { JsonApiResource } from '@/types/api';
 
 export type UserConfigs = {
   locale?: AppLocale;
@@ -22,9 +23,5 @@ export type UserAttributesApi = {
 };
 
 export type UserResource = {
-  data: {
-    id: string;
-    type: 'user';
-    attributes: UserAttributesApi;
-  };
+  data: JsonApiResource<'user', UserAttributesApi>;
 };

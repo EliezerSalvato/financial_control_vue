@@ -1,9 +1,7 @@
+import type { YearMonth } from '@/types/api';
 import type { SettledTransaction } from '@/types/transaction';
 
-export type YearMonth = {
-  month: number;
-  year: number;
-};
+export type { YearMonth };
 
 export function toDateKey(value: string | null | undefined): string {
   return value?.slice(0, 10) ?? '';

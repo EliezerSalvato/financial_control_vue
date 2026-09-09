@@ -1,4 +1,5 @@
 import type { TransactionKind, TransactionRecurrenceType } from '@/types/transaction';
+import type { CollectionListResult, JsonApiResource, JsonApiUnpaginatedCollectionResponse, YearMonth } from '@/types/api';
 
 export type MonthlyStatementPaymentMethod = 'credit_card' | 'account';
 
@@ -42,23 +43,10 @@ export type MonthlyStatementAttributesApi = {
   canceledOn?: string | null;
 };
 
-export type MonthlyStatementResourceItemApi = {
-  id: string;
-  type: 'monthly_statement';
-  attributes: MonthlyStatementAttributesApi;
-};
+export type MonthlyStatementResourceItemApi = JsonApiResource<'monthly_statement', MonthlyStatementAttributesApi>;
 
-export type MonthlyStatementCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: MonthlyStatementResourceItemApi[];
-};
+export type MonthlyStatementCollectionResponseApi = JsonApiUnpaginatedCollectionResponse<MonthlyStatementResourceItemApi>;
 
-export type MonthlyStatementListParams = {
-  month: number;
-  year: number;
-};
+export type MonthlyStatementListParams = YearMonth;
 
-export type MonthlyStatementListResult = {
-  monthlyStatements: MonthlyStatement[];
-};
+export type MonthlyStatementListResult = CollectionListResult<'monthlyStatements', MonthlyStatement>;

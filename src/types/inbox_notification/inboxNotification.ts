@@ -1,3 +1,5 @@
+import type { JsonApiCollectionResponse, JsonApiObjectResponse, JsonApiResource, MessageSuccessResponseApi, MutationResult } from '@/types/api';
+
 export const TRANSACTION_NOTIFIABLE_TYPE = 'Transaction::Record';
 
 export type InboxNotification = {
@@ -26,11 +28,7 @@ export type InboxNotificationAttributesApi = {
   createdAt: string;
 };
 
-export type InboxNotificationResourceItemApi = {
-  id: string;
-  type: 'notification';
-  attributes: InboxNotificationAttributesApi;
-};
+export type InboxNotificationResourceItemApi = JsonApiResource<'notification', InboxNotificationAttributesApi>;
 
 export type InboxNotificationCursorMetaApi = {
   limit: number;
@@ -39,23 +37,11 @@ export type InboxNotificationCursorMetaApi = {
   unread_count: number;
 };
 
-export type InboxNotificationCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: InboxNotificationResourceItemApi[];
-  meta: InboxNotificationCursorMetaApi;
-};
+export type InboxNotificationCollectionResponseApi = JsonApiCollectionResponse<InboxNotificationResourceItemApi, InboxNotificationCursorMetaApi>;
 
-export type InboxNotificationSuccessResponseApi = {
-  status: 'success';
-  type: 'object';
-  message?: string;
-  data: InboxNotificationResourceItemApi;
-};
+export type InboxNotificationSuccessResponseApi = JsonApiObjectResponse<InboxNotificationResourceItemApi>;
 
-export type InboxNotificationReadAllResponseApi = {
-  status: 'success';
-  message: string;
+export type InboxNotificationReadAllResponseApi = MessageSuccessResponseApi & {
   meta: {
     count: number;
   };
@@ -81,10 +67,7 @@ export type InboxNotificationListResult = {
 
 export type InboxNotificationShowResult = InboxNotification;
 
-export type InboxNotificationReadResult = {
-  message: string;
-  notification: InboxNotification;
-};
+export type InboxNotificationReadResult = MutationResult<'notification', InboxNotification>;
 
 export type InboxNotificationReadAllResult = {
   message: string;

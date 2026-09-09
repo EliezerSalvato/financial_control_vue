@@ -1,1 +1,1 @@
-export type { MessageSuccessResponseApi, SettlementProcessingPayload } from './settlement';
+export type { SettlementProcessingPayload } from './settlement';

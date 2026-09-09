@@ -1,4 +1,12 @@
-import type { Pagination, PaginationMetaApi } from '@/types/api/pagination';
+import type {
+  JsonApiCollectionResponse,
+  JsonApiCreateResponse,
+  JsonApiObjectResponse,
+  JsonApiResource,
+  ListParams,
+  MutationResult,
+  PaginatedListResult,
+} from '@/types/api';
 
 export type AccountKind = 'bank_account' | 'cash';
 
@@ -28,18 +36,9 @@ export type AccountAttributesApi = {
   active: boolean;
 };
 
-export type AccountResourceItemApi = {
-  id: string;
-  type: 'account';
-  attributes: AccountAttributesApi;
-};
+export type AccountResourceItemApi = JsonApiResource<'account', AccountAttributesApi>;
 
-export type AccountCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: AccountResourceItemApi[];
-  meta: PaginationMetaApi;
-};
+export type AccountCollectionResponseApi = JsonApiCollectionResponse<AccountResourceItemApi>;
 
 export type AccountListFilters = {
   nameCont?: string;
@@ -48,19 +47,9 @@ export type AccountListFilters = {
   activeEq?: boolean;
 };
 
-export type AccountListParams = {
-  page?: number;
-  perPage?: number;
-  filters?: AccountListFilters;
-  sort?: string;
-};
+export type AccountListParams = ListParams<AccountListFilters>;
 
-export type AccountListResult = {
-  accounts: Account[];
-  pagination: Pagination;
-};
-
-export type { MessageSuccessResponseApi } from '@/types/api';
+export type AccountListResult = PaginatedListResult<'accounts', Account>;
 
 export type AccountForm = {
   name: string;
@@ -88,21 +77,11 @@ export type AccountCreatePayload = {
 
 export type AccountUpdatePayload = AccountCreatePayload;
 
-export type AccountSuccessResponseApi = {
-  status: 'success';
-  type: 'object';
-  message?: string;
-  data: AccountResourceItemApi;
-};
+export type AccountSuccessResponseApi = JsonApiObjectResponse<AccountResourceItemApi>;
 
-export type AccountCreateResponseApi = AccountSuccessResponseApi & {
-  message: string;
-};
+export type AccountCreateResponseApi = JsonApiCreateResponse<AccountResourceItemApi>;
 
-export type AccountCreateResult = {
-  message: string;
-  account: Account;
-};
+export type AccountCreateResult = MutationResult<'account', Account>;
 
 export type AccountUpdateResult = AccountCreateResult;
 

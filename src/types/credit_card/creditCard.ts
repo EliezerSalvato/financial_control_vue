@@ -1,4 +1,12 @@
-import type { Pagination, PaginationMetaApi } from '@/types/api/pagination';
+import type {
+  JsonApiCollectionResponse,
+  JsonApiCreateResponse,
+  JsonApiObjectResponse,
+  JsonApiResource,
+  ListParams,
+  MutationResult,
+  PaginatedListResult,
+} from '@/types/api';
 
 export type CreditCard = {
   id: string;
@@ -28,18 +36,9 @@ export type CreditCardAttributesApi = {
   active: boolean;
 };
 
-export type CreditCardResourceItemApi = {
-  id: string;
-  type: 'credit_card';
-  attributes: CreditCardAttributesApi;
-};
+export type CreditCardResourceItemApi = JsonApiResource<'credit_card', CreditCardAttributesApi>;
 
-export type CreditCardCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: CreditCardResourceItemApi[];
-  meta: PaginationMetaApi;
-};
+export type CreditCardCollectionResponseApi = JsonApiCollectionResponse<CreditCardResourceItemApi>;
 
 export type CreditCardListFilters = {
   nameCont?: string;
@@ -49,19 +48,9 @@ export type CreditCardListFilters = {
   activeEq?: boolean;
 };
 
-export type CreditCardListParams = {
-  page?: number;
-  perPage?: number;
-  filters?: CreditCardListFilters;
-  sort?: string;
-};
+export type CreditCardListParams = ListParams<CreditCardListFilters>;
 
-export type CreditCardListResult = {
-  creditCards: CreditCard[];
-  pagination: Pagination;
-};
-
-export type { MessageSuccessResponseApi } from '@/types/api';
+export type CreditCardListResult = PaginatedListResult<'creditCards', CreditCard>;
 
 export type CreditCardForm = {
   institutionId: string;
@@ -102,21 +91,11 @@ export type CreditCardUpdatePayload = {
   };
 };
 
-export type CreditCardSuccessResponseApi = {
-  status: 'success';
-  type: 'object';
-  message?: string;
-  data: CreditCardResourceItemApi;
-};
+export type CreditCardSuccessResponseApi = JsonApiObjectResponse<CreditCardResourceItemApi>;
 
-export type CreditCardCreateResponseApi = CreditCardSuccessResponseApi & {
-  message: string;
-};
+export type CreditCardCreateResponseApi = JsonApiCreateResponse<CreditCardResourceItemApi>;
 
-export type CreditCardCreateResult = {
-  message: string;
-  creditCard: CreditCard;
-};
+export type CreditCardCreateResult = MutationResult<'creditCard', CreditCard>;
 
 export type CreditCardUpdateResult = CreditCardCreateResult;
 

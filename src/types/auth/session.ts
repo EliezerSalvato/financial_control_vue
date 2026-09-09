@@ -25,8 +25,3 @@ export type SessionRefreshSuccessResponse = {
     user: User;
   };
 };
-
-export type SessionRevokeSuccessResponse = {
-  status: 'success';
-  message: string;
-};

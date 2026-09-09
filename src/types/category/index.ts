@@ -6,7 +6,6 @@ export type {
   CategoryListFilters,
   CategoryListParams,
   CategoryListResult,
-  MessageSuccessResponseApi,
   CategoryForm,
   CategoryCreatePayload,
   CategoryUpdatePayload,

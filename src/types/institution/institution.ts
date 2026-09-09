@@ -1,4 +1,12 @@
-import type { Pagination, PaginationMetaApi } from '@/types/api/pagination';
+import type {
+  JsonApiCollectionResponse,
+  JsonApiCreateResponse,
+  JsonApiObjectResponse,
+  JsonApiResource,
+  ListParams,
+  MutationResult,
+  PaginatedListResult,
+} from '@/types/api';
 
 export type Institution = {
   id: string;
@@ -14,37 +22,18 @@ export type InstitutionAttributesApi = {
   active: boolean;
 };
 
-export type InstitutionResourceItemApi = {
-  id: string;
-  type: 'institution';
-  attributes: InstitutionAttributesApi;
-};
+export type InstitutionResourceItemApi = JsonApiResource<'institution', InstitutionAttributesApi>;
 
-export type InstitutionCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: InstitutionResourceItemApi[];
-  meta: PaginationMetaApi;
-};
+export type InstitutionCollectionResponseApi = JsonApiCollectionResponse<InstitutionResourceItemApi>;
 
 export type InstitutionListFilters = {
   nameCont?: string;
   activeEq?: boolean;
 };
 
-export type InstitutionListParams = {
-  page?: number;
-  perPage?: number;
-  filters?: InstitutionListFilters;
-  sort?: string;
-};
+export type InstitutionListParams = ListParams<InstitutionListFilters>;
 
-export type InstitutionListResult = {
-  institutions: Institution[];
-  pagination: Pagination;
-};
-
-export type { MessageSuccessResponseApi } from '@/types/api';
+export type InstitutionListResult = PaginatedListResult<'institutions', Institution>;
 
 export type InstitutionForm = {
   name: string;
@@ -62,21 +51,11 @@ export type InstitutionCreatePayload = {
 
 export type InstitutionUpdatePayload = InstitutionCreatePayload;
 
-export type InstitutionSuccessResponseApi = {
-  status: 'success';
-  type: 'object';
-  message?: string;
-  data: InstitutionResourceItemApi;
-};
+export type InstitutionSuccessResponseApi = JsonApiObjectResponse<InstitutionResourceItemApi>;
 
-export type InstitutionCreateResponseApi = InstitutionSuccessResponseApi & {
-  message: string;
-};
+export type InstitutionCreateResponseApi = JsonApiCreateResponse<InstitutionResourceItemApi>;
 
-export type InstitutionCreateResult = {
-  message: string;
-  institution: Institution;
-};
+export type InstitutionCreateResult = MutationResult<'institution', Institution>;
 
 export type InstitutionUpdateResult = InstitutionCreateResult;
 

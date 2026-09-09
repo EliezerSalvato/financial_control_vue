@@ -12,11 +12,6 @@ export type ProfileUpdatePayloadApi = {
   configs?: UserConfigs;
 };
 
-export type ProfileUpdateSuccessResponse = {
-  status: 'success';
-  message: string;
-};
-
 export type NameForm = {
   firstName: string;
   lastName: string;

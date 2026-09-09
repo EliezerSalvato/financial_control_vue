@@ -6,7 +6,6 @@ export type {
   CreditCardListFilters,
   CreditCardListParams,
   CreditCardListResult,
-  MessageSuccessResponseApi,
   CreditCardForm,
   CreditCardCreatePayload,
   CreditCardUpdatePayload,

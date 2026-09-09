@@ -8,18 +8,8 @@ export type EmailChangePayloadApi = {
   current_password: string;
 };
 
-export type EmailChangeSuccessResponse = {
-  status: 'success';
-  message: string;
-};
-
 export type EmailConfirmationPayload = {
   token: string;
-};
-
-export type EmailConfirmationSuccessResponse = {
-  status: 'success';
-  message: string;
 };
 
 export type EmailForm = {

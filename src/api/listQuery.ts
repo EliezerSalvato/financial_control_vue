@@ -1,11 +1,7 @@
+import type { ListParams } from '@/types/api';
 import { toSnakeKey } from '@/utils/case';
 
-export type ListQueryParams = {
-  page?: number;
-  perPage?: number;
-  sort?: string;
-  filters?: object;
-};
+export type ListQueryParams = ListParams;
 
 export function appendListQuery(search: URLSearchParams, params: Pick<ListQueryParams, 'page' | 'perPage' | 'sort'>): void {
   if (params.page != null) {

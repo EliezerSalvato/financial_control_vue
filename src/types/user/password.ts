@@ -14,11 +14,6 @@ export type PasswordResetUpdatePayloadApi = {
   password_confirmation: string;
 };
 
-export type PasswordResetSuccessResponse = {
-  status: 'success';
-  message: string;
-};
-
 export type PasswordChangePayload = {
   currentPassword: string;
   password: string;
@@ -29,11 +24,6 @@ export type PasswordChangePayloadApi = {
   current_password: string;
   password: string;
   password_confirmation: string;
-};
-
-export type PasswordChangeSuccessResponse = {
-  status: 'success';
-  message: string;
 };
 
 export type ForgotPasswordForm = {

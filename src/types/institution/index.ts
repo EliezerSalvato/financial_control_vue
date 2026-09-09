@@ -6,7 +6,6 @@ export type {
   InstitutionListFilters,
   InstitutionListParams,
   InstitutionListResult,
-  MessageSuccessResponseApi,
   InstitutionForm,
   InstitutionCreatePayload,
   InstitutionUpdatePayload,

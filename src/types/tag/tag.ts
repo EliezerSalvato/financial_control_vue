@@ -1,4 +1,12 @@
-import type { Pagination, PaginationMetaApi } from '@/types/api/pagination';
+import type {
+  JsonApiCollectionResponse,
+  JsonApiCreateResponse,
+  JsonApiObjectResponse,
+  JsonApiResource,
+  ListParams,
+  MutationResult,
+  PaginatedListResult,
+} from '@/types/api';
 
 export type Tag = {
   id: string;
@@ -14,37 +22,18 @@ export type TagAttributesApi = {
   active: boolean;
 };
 
-export type TagResourceItemApi = {
-  id: string;
-  type: 'tag';
-  attributes: TagAttributesApi;
-};
+export type TagResourceItemApi = JsonApiResource<'tag', TagAttributesApi>;
 
-export type TagCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: TagResourceItemApi[];
-  meta: PaginationMetaApi;
-};
+export type TagCollectionResponseApi = JsonApiCollectionResponse<TagResourceItemApi>;
 
 export type TagListFilters = {
   nameCont?: string;
   activeEq?: boolean;
 };
 
-export type TagListParams = {
-  page?: number;
-  perPage?: number;
-  filters?: TagListFilters;
-  sort?: string;
-};
+export type TagListParams = ListParams<TagListFilters>;
 
-export type TagListResult = {
-  tags: Tag[];
-  pagination: Pagination;
-};
-
-export type { MessageSuccessResponseApi } from '@/types/api';
+export type TagListResult = PaginatedListResult<'tags', Tag>;
 
 export type TagForm = {
   name: string;
@@ -62,21 +51,11 @@ export type TagCreatePayload = {
 
 export type TagUpdatePayload = TagCreatePayload;
 
-export type TagSuccessResponseApi = {
-  status: 'success';
-  type: 'object';
-  message?: string;
-  data: TagResourceItemApi;
-};
+export type TagSuccessResponseApi = JsonApiObjectResponse<TagResourceItemApi>;
 
-export type TagCreateResponseApi = TagSuccessResponseApi & {
-  message: string;
-};
+export type TagCreateResponseApi = JsonApiCreateResponse<TagResourceItemApi>;
 
-export type TagCreateResult = {
-  message: string;
-  tag: Tag;
-};
+export type TagCreateResult = MutationResult<'tag', Tag>;
 
 export type TagUpdateResult = TagCreateResult;
 

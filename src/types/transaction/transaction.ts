@@ -1,4 +1,12 @@
-import type { Pagination, PaginationMetaApi } from '@/types/api/pagination';
+import type {
+  JsonApiCollectionResponse,
+  JsonApiCreateResponse,
+  JsonApiObjectResponse,
+  JsonApiResource,
+  ListParams,
+  MutationResult,
+  PaginatedListResult,
+} from '@/types/api';
 
 export type TransactionKind = 'income' | 'expense' | 'transfer_between_accounts';
 
@@ -44,11 +52,7 @@ export type TransactionRecurrenceAttributesApi = {
   value: string | number;
 };
 
-export type TransactionRecurrenceResourceItemApi = {
-  id: string;
-  type: 'transaction_recurrence';
-  attributes: TransactionRecurrenceAttributesApi;
-};
+export type TransactionRecurrenceResourceItemApi = JsonApiResource<'transaction_recurrence', TransactionRecurrenceAttributesApi>;
 
 export type TransactionAttributesApi = {
   id: string;
@@ -70,18 +74,9 @@ export type TransactionAttributesApi = {
   currentValue?: string | number;
 };
 
-export type TransactionResourceItemApi = {
-  id: string;
-  type: 'transaction';
-  attributes: TransactionAttributesApi;
-};
+export type TransactionResourceItemApi = JsonApiResource<'transaction', TransactionAttributesApi>;
 
-export type TransactionCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: TransactionResourceItemApi[];
-  meta: PaginationMetaApi;
-};
+export type TransactionCollectionResponseApi = JsonApiCollectionResponse<TransactionResourceItemApi>;
 
 export type TransactionListFilters = {
   descriptionCont?: string;
@@ -92,19 +87,9 @@ export type TransactionListFilters = {
   categoryIdEq?: string;
 };
 
-export type TransactionListParams = {
-  page?: number;
-  perPage?: number;
-  filters?: TransactionListFilters;
-  sort?: string;
-};
+export type TransactionListParams = ListParams<TransactionListFilters>;
 
-export type TransactionListResult = {
-  transactions: Transaction[];
-  pagination: Pagination;
-};
-
-export type { MessageSuccessResponseApi } from '@/types/api';
+export type TransactionListResult = PaginatedListResult<'transactions', Transaction>;
 
 export type TransactionForm = {
   description: string;
@@ -162,21 +147,11 @@ export type TransactionUpdatePayload = {
   };
 };
 
-export type TransactionSuccessResponseApi = {
-  status: 'success';
-  type: 'object';
-  message?: string;
-  data: TransactionResourceItemApi;
-};
+export type TransactionSuccessResponseApi = JsonApiObjectResponse<TransactionResourceItemApi>;
 
-export type TransactionCreateResponseApi = TransactionSuccessResponseApi & {
-  message: string;
-};
+export type TransactionCreateResponseApi = JsonApiCreateResponse<TransactionResourceItemApi>;
 
-export type TransactionCreateResult = {
-  message: string;
-  transaction: Transaction;
-};
+export type TransactionCreateResult = MutationResult<'transaction', Transaction>;
 
 export type TransactionUpdateResult = TransactionCreateResult;
 

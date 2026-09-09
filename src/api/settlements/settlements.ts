@@ -1,4 +1,5 @@
-import type { MessageSuccessResponseApi, SettlementProcessingPayload } from '@/types/settlement';
+import type { MessageSuccessResponseApi } from '@/types/api';
+import type { SettlementProcessingPayload } from '@/types/settlement';
 import { apiRequest } from '@/api/client';
 import { keysToSnakeCase } from '@/utils/case';
 

@@ -1,5 +1,5 @@
+import type { MessageSuccessResponseApi } from '@/types/api';
 import type {
-  MessageSuccessResponseApi,
   TagCollectionResponseApi,
   TagCreatePayload,
   TagCreateResponseApi,

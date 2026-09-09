@@ -1,3 +1,5 @@
+import type { JsonApiObjectResponse, JsonApiResource, MutationResult, YearMonth } from '@/types/api';
+
 export type MonthlyStatusKind = 'open' | 'closed';
 
 export type MonthlyStatus = {
@@ -18,18 +20,9 @@ export type MonthlyStatusAttributesApi = {
   lastProcessedAt: string | null;
 };
 
-export type MonthlyStatusResourceItemApi = {
-  id: string;
-  type: 'monthly_status';
-  attributes: MonthlyStatusAttributesApi;
-};
+export type MonthlyStatusResourceItemApi = JsonApiResource<'monthly_status', MonthlyStatusAttributesApi>;
 
-export type MonthlyStatusSuccessResponseApi = {
-  status: 'success';
-  type: 'object';
-  message?: string;
-  data: MonthlyStatusResourceItemApi;
-};
+export type MonthlyStatusSuccessResponseApi = JsonApiObjectResponse<MonthlyStatusResourceItemApi>;
 
 export type MonthlyStatusProcessingPayloadApi = {
   processing: boolean;
@@ -41,22 +34,14 @@ export type MonthlyStatusProcessingUpdate = {
   lastProcessedAt: string | null;
 };
 
-export type MonthlyStatusShowParams = {
-  month: number;
-  year: number;
-};
+export type MonthlyStatusShowParams = YearMonth;
 
 export type MonthlyStatusShowResult = MonthlyStatus;
 
 export type MonthlyStatusUpdatePayload = {
-  monthlyStatus: {
-    month: number;
-    year: number;
+  monthlyStatus: YearMonth & {
     status: MonthlyStatusKind;
   };
 };
 
-export type MonthlyStatusUpdateResult = {
-  message: string;
-  monthlyStatus: MonthlyStatus;
-};
+export type MonthlyStatusUpdateResult = MutationResult<'monthlyStatus', MonthlyStatus>;

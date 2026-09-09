@@ -1,4 +1,12 @@
-import type { Pagination, PaginationMetaApi } from '@/types/api/pagination';
+import type {
+  JsonApiCollectionResponse,
+  JsonApiCreateResponse,
+  JsonApiObjectResponse,
+  JsonApiResource,
+  ListParams,
+  MutationResult,
+  PaginatedListResult,
+} from '@/types/api';
 
 export type Category = {
   id: string;
@@ -14,37 +22,18 @@ export type CategoryAttributesApi = {
   active: boolean;
 };
 
-export type CategoryResourceItemApi = {
-  id: string;
-  type: 'category';
-  attributes: CategoryAttributesApi;
-};
+export type CategoryResourceItemApi = JsonApiResource<'category', CategoryAttributesApi>;
 
-export type CategoryCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: CategoryResourceItemApi[];
-  meta: PaginationMetaApi;
-};
+export type CategoryCollectionResponseApi = JsonApiCollectionResponse<CategoryResourceItemApi>;
 
 export type CategoryListFilters = {
   nameCont?: string;
   activeEq?: boolean;
 };
 
-export type CategoryListParams = {
-  page?: number;
-  perPage?: number;
-  filters?: CategoryListFilters;
-  sort?: string;
-};
+export type CategoryListParams = ListParams<CategoryListFilters>;
 
-export type CategoryListResult = {
-  categories: Category[];
-  pagination: Pagination;
-};
-
-export type { MessageSuccessResponseApi } from '@/types/api';
+export type CategoryListResult = PaginatedListResult<'categories', Category>;
 
 export type CategoryForm = {
   name: string;
@@ -62,21 +51,11 @@ export type CategoryCreatePayload = {
 
 export type CategoryUpdatePayload = CategoryCreatePayload;
 
-export type CategorySuccessResponseApi = {
-  status: 'success';
-  type: 'object';
-  message?: string;
-  data: CategoryResourceItemApi;
-};
+export type CategorySuccessResponseApi = JsonApiObjectResponse<CategoryResourceItemApi>;
 
-export type CategoryCreateResponseApi = CategorySuccessResponseApi & {
-  message: string;
-};
+export type CategoryCreateResponseApi = JsonApiCreateResponse<CategoryResourceItemApi>;
 
-export type CategoryCreateResult = {
-  message: string;
-  category: Category;
-};
+export type CategoryCreateResult = MutationResult<'category', Category>;
 
 export type CategoryUpdateResult = CategoryCreateResult;
 

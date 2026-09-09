@@ -1,3 +1,4 @@
+import type { CollectionListResult, JsonApiResource, JsonApiUnpaginatedCollectionResponse, YearMonth } from '@/types/api';
 import type { LimitConsumptionType, TransactionKind, TransactionPaymentMethod, TransactionRecurrenceType, TransactionStatus } from './transaction';
 
 export type SettledTransaction = {
@@ -46,26 +47,14 @@ export type SettledTransactionAttributesApi = {
   destinationAccountId?: string | null;
 };
 
-export type SettledTransactionResourceItemApi = {
-  id: string;
-  type: 'settled_transaction';
-  attributes: SettledTransactionAttributesApi;
-};
+export type SettledTransactionResourceItemApi = JsonApiResource<'settled_transaction', SettledTransactionAttributesApi>;
 
-export type SettledTransactionCollectionResponseApi = {
-  status: 'success';
-  type: 'collection';
-  data: SettledTransactionResourceItemApi[];
-};
+export type SettledTransactionCollectionResponseApi = JsonApiUnpaginatedCollectionResponse<SettledTransactionResourceItemApi>;
 
 export type SettledTransactionType = 'account' | 'credit_card' | 'transfer_between_accounts';
 
-export type SettledTransactionListParams = {
-  month: number;
-  year: number;
+export type SettledTransactionListParams = YearMonth & {
   type?: SettledTransactionType;
 };
 
-export type SettledTransactionListResult = {
-  settledTransactions: SettledTransaction[];
-};
+export type SettledTransactionListResult = CollectionListResult<'settledTransactions', SettledTransaction>;
