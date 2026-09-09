@@ -1,8 +1,2 @@
-export type {
-  AuthenticationPayload,
-  AuthenticationPayloadApi,
-  AuthenticationSuccessResponse,
-  AuthenticationSuccessResponseApi,
-  LoginForm,
-} from './authentication';
-export type { SessionRefreshPayload, SessionRefreshPayloadApi, SessionRefreshSuccessResponse, SessionRefreshSuccessResponseApi } from './session';
+export type { AuthenticationPayload, AuthenticationPayloadApi, LoginForm } from './authentication';
+export type { AuthSessionSuccessResponse, AuthSessionSuccessResponseApi, SessionRefreshPayload, SessionRefreshPayloadApi } from './session';

@@ -26,17 +26,8 @@ export type PasswordChangePayloadApi = {
   password_confirmation: string;
 };
 
-export type ForgotPasswordForm = {
-  email: string;
-};
+export type ForgotPasswordForm = PasswordResetPayload;
 
-export type ResetPasswordForm = {
-  password: string;
-  passwordConfirmation: string;
-};
+export type ResetPasswordForm = Omit<PasswordResetUpdatePayload, 'token'>;
 
-export type PasswordForm = {
-  currentPassword: string;
-  password: string;
-  passwordConfirmation: string;
-};
+export type PasswordForm = PasswordChangePayload;

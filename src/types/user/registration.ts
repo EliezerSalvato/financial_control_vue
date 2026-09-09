@@ -25,10 +25,4 @@ export type RegistrationSuccessResponse = {
   };
 };
 
-export type RegistrationForm = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-  passwordConfirmation: string;
-};
+export type RegistrationForm = RegistrationPayload;

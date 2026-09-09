@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ResetPasswordForm } from '@/types/user';
+import type { PasswordResetUpdatePayload, ResetPasswordForm } from '@/types/user';
 import { updatePasswordReset } from '@/api/user';
 import { useI18n } from 'vue-i18n';
 import { useNotificationStore } from '@/stores/notification';
@@ -9,8 +9,6 @@ import { useRoute, useRouter } from 'vue-router';
 import InputText from '@/components/inputs/InputText.vue';
 import NotificationMessage from '@/components/NotificationMessage.vue';
 import UserLinks from '@/components/user/UserLinks.vue';
-
-type ResetPasswordFields = ResetPasswordForm & { token: string };
 
 const { t } = useI18n();
 const route = useRoute();
@@ -25,7 +23,7 @@ const form = reactive<ResetPasswordForm>({
   passwordConfirmation: '',
 });
 
-const { errors, validateWith, applyCatch } = useFormErrors((): ResetPasswordFields => ({ ...form, token: token.value }));
+const { errors, validateWith, applyCatch } = useFormErrors((): PasswordResetUpdatePayload => ({ ...form, token: token.value }));
 
 function validate(): boolean {
   return validateWith((handler) =>

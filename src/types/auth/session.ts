@@ -8,7 +8,7 @@ export type SessionRefreshPayloadApi = {
   remember_me: boolean;
 };
 
-export type SessionRefreshSuccessResponseApi = {
+export type AuthSessionSuccessResponseApi = {
   status: 'success';
   type: 'object';
   data: {
@@ -17,7 +17,7 @@ export type SessionRefreshSuccessResponseApi = {
   };
 };
 
-export type SessionRefreshSuccessResponse = {
+export type AuthSessionSuccessResponse = {
   status: 'success';
   type: 'object';
   data: {

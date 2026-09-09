@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { EmailConfirmationPayload } from '@/types/user';
 import { createEmailConfirmation } from '@/api/user';
 import { useI18n } from 'vue-i18n';
 import { useNotificationStore } from '@/stores/notification';
@@ -7,17 +8,13 @@ import { onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import NotificationMessage from '@/components/NotificationMessage.vue';
 
-type ConfirmEmailForm = {
-  token: string;
-};
-
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const notificationStore = useNotificationStore();
 
 const loading = ref(true);
-const form = reactive<ConfirmEmailForm>({ token: '' });
+const form = reactive<EmailConfirmationPayload>({ token: '' });
 const { errors, applyCatch, createHandler } = useFormErrors(form);
 
 async function confirmEmail() {

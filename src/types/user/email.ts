@@ -12,7 +12,4 @@ export type EmailConfirmationPayload = {
   token: string;
 };
 
-export type EmailForm = {
-  currentPassword: string;
-  newEmail: string;
-};
+export type EmailForm = EmailChangePayload;
