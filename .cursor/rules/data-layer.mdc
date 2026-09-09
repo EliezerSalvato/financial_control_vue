@@ -1,0 +1,41 @@
+---
+description: API, transformers e types — HTTP isolado, *Api vs domain
+globs: src/api/**/*.ts,src/transformers/**/*.ts,src/types/**/*.ts
+alwaysApply: false
+---
+
+# Data layer (api / transformers / types)
+
+Base URL: `import.meta.env.VITE_API_BASE_URL` in `@/api/client`.
+Cable URL: `import.meta.env.VITE_CABLE_URL` in `@/api/cable/client`. Both come from `.env` (see `.env.sample`).
+
+## API (`src/api/`)
+
+- Only call `apiRequest` from `@/api/client` — never raw `fetch` from pages/components.
+- Paths: `/api/v1/...`. Domain folders + `index.ts` re-exports.
+- Verb functions: `listTags`, `createTag`, `getTag`, `updateTag`, `deleteTag`.
+- List/create/update/show usually return transformed domain results; simple mutations may return the API response type.
+- List query params: Ransack (`q[name_cont]`, `q[active_eq]`) and snake_case (`per_page`).
+
+`apiRequest` already sends JSON + Bearer token, credentials/locale cookie, retries once on `401`, throws `ApiError` (`status`, `message`, `details`).
+
+## Transformers (`src/transformers/`)
+
+Convert API ↔ domain. Named helpers: `tagFromResource`, `tagCollectionFromApi`, `tagShowFromApi`.
+
+- Normalize attributes with `keysToCamelCase` from `@/utils/case`.
+- Pagination via `toPagination` in `@/types/api/pagination`.
+- Never transform inside pages/components.
+- Create/update: typed payloads (`TagCreatePayload`) built in the page/API layer; do not map raw responses in the UI.
+
+## Types (`src/types/`)
+
+| Kind | Example |
+| --- | --- |
+| Domain | `Tag`, `User` |
+| API wire | `TagAttributesApi`, `TagCollectionResponseApi` |
+| Form | `TagForm` |
+| Request | `TagCreatePayload` |
+| UI result | `TagListResult` |
+
+No `I` prefix. Avoid `any`; prefer `unknown`, generics, explicit types. Domain camelCase; API shapes use `*Api` when they differ.

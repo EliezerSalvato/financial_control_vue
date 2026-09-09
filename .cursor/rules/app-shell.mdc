@@ -1,0 +1,40 @@
+---
+description: Router, Pinia stores e i18n (rotas, sessão, locales)
+globs: src/router/**/*.ts,src/stores/**/*.ts,src/locales/**/*.ts
+alwaysApply: false
+---
+
+# App shell (router / stores / i18n)
+
+## Routing (`src/router/`)
+
+- Domain modules (`tags.ts`, `users.ts`) spread into `router/index.ts`.
+- Names: `camelCase` (`tags`, `tagsNew`, `tagsEdit`, `signIn`).
+- Paths: `kebab-case` segments (`/users/sign-in`, `/users/sign-up`).
+- Protected: `meta: { requiresAuth: true }`. Guest-only (login/register/password): `meta: { requiresGuest: true }`. Nested resources often use `RouterView`.
+- Eager imports (not lazy) unless changing that on purpose.
+
+```ts
+{
+  path: '/tags',
+  component: RouterView,
+  meta: { requiresAuth: true },
+  children: [{ path: '', name: 'tags', component: Tags }],
+}
+```
+
+Guard (`router/index.ts`): clears notification on navigate; restores session when needed; on `requiresAuth` redirects unauthenticated users to `signIn?redirect=`; on `requiresGuest` redirects authenticated users to `home`.
+
+When exposing a new nav item: update `MenuItems.vue` and menu keys in locales.
+
+## Pinia (`src/stores/<id>/index.ts`)
+
+Setup stores only: `defineStore('id', () => { ... })`. Expose state, computed, actions — no view-specific logic.
+
+Existing: `auth` (token, remember-me, refresh/logout), `user`, `notification` (`success` | `danger`).
+
+## i18n (`src/locales/`)
+
+All UI copy via `useI18n()` / `t()` — never hardcode strings.
+
+Locales: `en` and `pt-BR` (always add both). Shared labels (`models`, `buttons`, `menu`, `activation`) → `locales/common/en.ts` and `locales/common/pt-BR.ts`. Domain copy → `locales/<domain>/en.ts` and `locales/<domain>/pt-BR.ts` (e.g. `auth`, `user`, `accounts`, `tags`).

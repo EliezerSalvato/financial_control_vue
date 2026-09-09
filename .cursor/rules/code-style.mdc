@@ -1,0 +1,45 @@
+---
+description: Ordem de imports, formatação e estilo de código
+globs: src/**/*.{ts,vue}
+alwaysApply: false
+---
+
+# Code style
+
+- Early returns; small functions; descriptive names.
+- Comments explain *why*, never *what*.
+- Prefer absolute imports (`@/...`).
+
+Formatting: `afterFileEdit` hook in `.cursor/hooks.json`. Do not hand-tune. Fallback: `pnpm lint && pnpm format`. Typecheck: `pnpm type-check`.
+
+## Import order (manual)
+
+1. Side-effect (`import '...'`) — blank line after
+2. Type-only (`import type` / `import { type ... }`)
+3. Named/destructured
+4. Default
+
+Within type and named groups: sort by number of imported items (ascending), then alphabetically. Defaults: alphabetically by imported name (or module path on tie).
+
+```ts
+// ❌ Avoid
+import apiClient from '@/api/client';
+import { computed, ref } from 'vue';
+import '@/assets/main.css';
+import { useAuthStore } from '@/stores/auth';
+import type { Session, Token } from '@/types/auth';
+import { createRouter, createWebHistory } from 'vue-router';
+import AppButton from '@/components/AppButton.vue';
+import type { User } from '@/types/user';
+
+// ✅ Prefer
+import '@/assets/main.css';
+
+import type { User } from '@/types/user';
+import type { Session, Token } from '@/types/auth';
+import { useAuthStore } from '@/stores/auth';
+import { computed, ref } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import apiClient from '@/api/client';
+import AppButton from '@/components/AppButton.vue';
+```

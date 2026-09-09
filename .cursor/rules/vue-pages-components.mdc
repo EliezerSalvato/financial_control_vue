@@ -1,0 +1,58 @@
+---
+description: Convenções Vue para pages e components (Composition API, shells, loading)
+globs: src/pages/**/*.vue,src/components/**/*.vue
+alwaysApply: false
+---
+
+# Vue pages & components
+
+- Always Composition API + `<script setup lang="ts">` + TypeScript.
+- Keep business logic out of UI when possible; one responsibility per component.
+- Reuse shells: `FormPanel`, `IndexPanel`, `Modal` / `ModalDelete`, `Loading`, `NotificationMessage`.
+- Form controls: `components/inputs/` (`InputText`, `Select`, `LogoSelect`, `ColorSelect`, `ColorPicker`, etc.).
+- Prefer `LogoSelect` for institution/network logos and `ColorSelect` for tags/categories/accounts (color swatch + label).
+- Never call `fetch` or build HTTP/transform API payloads here — use `@/api/*` and transformers.
+
+## Props & emits
+
+```ts
+interface Props {
+  user: User;
+  disabled?: boolean;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  save: [user: User];
+  cancel: [];
+}>();
+```
+
+`withDefaults()` when optional props need defaults (see `FormPanel.vue`). Avoid runtime prop declarations unless required.
+
+## State & templates
+
+- Prefer `computed()` over watchers; `watch()` only for side effects.
+- `ref()` for primitives/single values; `reactive()` for multi-field forms.
+- Keep templates declarative; move non-trivial expressions to `computed()` or functions.
+- Scoped styles; Bulma classes already used in the app. Inline styles only when dynamic.
+
+## Loading
+
+```ts
+const loading = ref(false);
+
+try {
+  loading.value = true;
+  // ...
+} finally {
+  loading.value = false;
+}
+```
+
+List pages may use `showLoading` / `showTableLoading` (see `pages/tags/Index.vue`).
+
+## Composables
+
+No `composables/` folder yet. When extracting reusable non-UI logic, use `src/composables/useSomething.ts` (same spirit as stores/utils).
