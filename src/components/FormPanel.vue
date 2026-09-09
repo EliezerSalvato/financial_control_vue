@@ -26,7 +26,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const pluralizedName = computed(() => pluralize(props.modelName, 'en').replaceAll('_', '-'));
+const pluralizedName = computed(() => pluralize(props.modelName, 'en').replace(/_/g, '-'));
 
 const title = computed(() => t(`buttons.${props.type}.${props.gender}`, { name: t(`models.${props.modelName}`) }));
 

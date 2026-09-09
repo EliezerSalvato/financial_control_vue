@@ -251,7 +251,7 @@ async function refreshColumnWidths() {
   syncColumnWidths();
 }
 
-const pluralizedName = computed(() => pluralize(props.modelName, 'en').replaceAll('_', '-'));
+const pluralizedName = computed(() => pluralize(props.modelName, 'en').replace(/_/g, '-'));
 const pluralizedTitle = computed(() => pluralize(t(`models.${props.modelName}`)));
 
 function changePage(page: number) {
