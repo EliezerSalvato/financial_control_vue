@@ -1,0 +1,18 @@
+export default {
+  title: 'Notifications',
+  details: 'Notification',
+  empty: 'No notifications yet.',
+  emptyUnread: 'No unread notifications.',
+  viewAll: 'View all',
+  unreadOnly: 'Unread only',
+  showAll: 'Show all',
+  markAllAsRead: 'Mark all as read',
+  close: 'Close',
+  unread: 'Unread',
+  read: 'Read',
+  data: 'Data',
+  relatedRecord: 'Related record',
+  notifiableType: 'Type',
+  notifiableId: 'ID',
+  unreadCount: '{count} unread',
+};

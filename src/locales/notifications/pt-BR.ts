@@ -1,0 +1,18 @@
+export default {
+  title: 'Notificações',
+  details: 'Notificação',
+  empty: 'Nenhuma notificação ainda.',
+  emptyUnread: 'Nenhuma notificação não lida.',
+  viewAll: 'Ver todas',
+  unreadOnly: 'Não lidas',
+  showAll: 'Todas',
+  markAllAsRead: 'Marcar todas como lidas',
+  close: 'Fechar',
+  unread: 'Não lida',
+  read: 'Lida',
+  data: 'Dados',
+  relatedRecord: 'Registro relacionado',
+  notifiableType: 'Tipo',
+  notifiableId: 'ID',
+  unreadCount: '{count} não lidas',
+};
