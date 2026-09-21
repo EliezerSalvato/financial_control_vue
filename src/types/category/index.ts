@@ -1,5 +1,8 @@
 export type {
   Category,
+  CategoryGoal,
+  CategoryGoalAttributesApi,
+  CategoryGoalResourceItemApi,
   CategoryAttributesApi,
   CategoryResourceItemApi,
   CategoryCollectionResponseApi,
@@ -14,4 +17,7 @@ export type {
   CategoryCreateResult,
   CategoryUpdateResult,
   CategoryShowResult,
+  CategoryGoalForm,
+  CategoryGoalUpdatePayload,
+  CategoryGoalUpdateResult,
 } from './category';

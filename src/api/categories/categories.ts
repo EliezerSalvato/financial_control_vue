@@ -4,6 +4,8 @@ import type {
   CategoryCreatePayload,
   CategoryCreateResponseApi,
   CategoryCreateResult,
+  CategoryGoalUpdatePayload,
+  CategoryGoalUpdateResult,
   CategoryListParams,
   CategoryListResult,
   CategoryShowResult,
@@ -45,6 +47,15 @@ export async function createCategory(payload: CategoryCreatePayload): Promise<Ca
 
 export async function updateCategory(id: string | number, payload: CategoryUpdatePayload): Promise<CategoryUpdateResult> {
   const response = await apiRequest<CategoryCreateResponseApi>(`/api/v1/categories/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(keysToSnakeCase(payload)),
+  });
+
+  return categoryUpdateFromApi(response);
+}
+
+export async function updateCategoryGoal(categoryId: string | number, payload: CategoryGoalUpdatePayload): Promise<CategoryGoalUpdateResult> {
+  const response = await apiRequest<CategoryCreateResponseApi>(`/api/v1/categories/${categoryId}/goals`, {
     method: 'PATCH',
     body: JSON.stringify(keysToSnakeCase(payload)),
   });

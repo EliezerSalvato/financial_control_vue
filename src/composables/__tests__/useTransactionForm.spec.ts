@@ -131,7 +131,7 @@ describe('useTransactionForm', () => {
 
   it('carrega as opções ativas e ignora falhas', async () => {
     vi.mocked(listCategories).mockResolvedValue({
-      categories: [{ id: 'cat-1', name: 'Moradia', color: '#111', active: true }],
+      categories: [{ id: 'cat-1', name: 'Moradia', color: '#111', active: true, goalEndsOn: null, currentGoal: null, goals: [] }],
       pagination: {
         currentPage: 1,
         prevPage: null,
@@ -194,7 +194,15 @@ describe('useTransactionForm', () => {
   });
 
   it('inclui opção ausente e usa o id como rótulo se a busca falhar', async () => {
-    vi.mocked(getCategory).mockResolvedValue({ id: 'cat-9', name: 'Extra', color: '#abc', active: true });
+    vi.mocked(getCategory).mockResolvedValue({
+      id: 'cat-9',
+      name: 'Extra',
+      color: '#abc',
+      active: true,
+      goalEndsOn: null,
+      currentGoal: null,
+      goals: [],
+    });
     vi.mocked(getAccount).mockRejectedValue(new Error('missing'));
 
     const mounted = mountForm();

@@ -13,14 +13,19 @@ const resource: CategoryResourceItemApi = {
   },
 };
 
+const expectedCategory = {
+  id: 'cat-1',
+  name: 'Moradia',
+  color: '#112233',
+  active: true,
+  goalEndsOn: null,
+  currentGoal: null,
+  goals: [],
+};
+
 describe('categoryFromResource', () => {
   it('mapeia o recurso para o domínio', () => {
-    expect(categoryFromResource(resource)).toEqual({
-      id: 'cat-1',
-      name: 'Moradia',
-      color: '#112233',
-      active: true,
-    });
+    expect(categoryFromResource(resource)).toEqual(expectedCategory);
   });
 
   it('usa o id do recurso e cor padrão quando o atributo falta', () => {
@@ -35,6 +40,38 @@ describe('categoryFromResource', () => {
       name: 'Sem cor',
       color: '#000000',
       active: false,
+      goalEndsOn: null,
+      currentGoal: null,
+      goals: [],
+    });
+  });
+
+  it('mapeia a meta atual e o histórico ordenado por ano e mês', () => {
+    expect(
+      categoryFromResource({
+        ...resource,
+        attributes: {
+          ...resource.attributes,
+          goalEndsOn: '2026-12-01',
+          currentGoal: {
+            id: 'goal-2',
+            type: 'category_goal',
+            attributes: { id: 'goal-2', month: 8, year: 2026, value: '600.0' },
+          },
+          goals: [
+            { id: 'goal-2', type: 'category_goal', attributes: { id: 'goal-2', month: 8, year: 2026, value: '600.0' } },
+            { id: 'goal-1', type: 'category_goal', attributes: { id: 'goal-1', month: 1, year: 2026, value: '500.0' } },
+          ],
+        },
+      }),
+    ).toEqual({
+      ...expectedCategory,
+      goalEndsOn: '2026-12-01',
+      currentGoal: { id: 'goal-2', month: 8, year: 2026, value: 600 },
+      goals: [
+        { id: 'goal-1', month: 1, year: 2026, value: 500 },
+        { id: 'goal-2', month: 8, year: 2026, value: 600 },
+      ],
     });
   });
 });
