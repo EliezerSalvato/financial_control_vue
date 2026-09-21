@@ -39,7 +39,7 @@ const root = useTemplateRef<HTMLElement>('root');
 const trigger = useTemplateRef<HTMLButtonElement>('trigger');
 const menu = useTemplateRef<HTMLElement>('menu');
 const isOpen = ref(false);
-const { opensUp } = useDropdownPlacement(isOpen, trigger, menu);
+const { menuStyle } = useDropdownPlacement(isOpen, trigger, menu);
 const { findIndex, clearQuery } = useSelectTypeahead();
 
 const selectedItem = computed(() => props.items.find((item) => item.key === model.value) ?? null);
@@ -103,7 +103,9 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 function onDocumentClick(event: MouseEvent) {
-  if (!root.value?.contains(event.target as Node)) {
+  const target = event.target as Node;
+
+  if (!root.value?.contains(target) && !menu.value?.contains(target)) {
     isOpen.value = false;
   }
 }
@@ -155,15 +157,17 @@ defineExpose({ focus });
           </span>
         </button>
 
-        <ul v-show="isOpen" ref="menu" class="option-select-menu" :class="{ 'is-up': opensUp }" role="listbox">
-          <li v-for="item in items" :key="item.key" role="option" :aria-selected="item.key === model">
-            <button type="button" class="option-select-option" :class="{ 'is-selected': item.key === model }" @click="select(item)">
-              <span v-if="item.color" class="option-select-swatch" :title="item.color" :style="{ backgroundColor: item.color }"></span>
-              <img v-else-if="item.url" class="option-select-image" :src="item.url" :alt="item.label" />
-              <span>{{ item.label }}</span>
-            </button>
-          </li>
-        </ul>
+        <Teleport to="body">
+          <ul v-if="isOpen" ref="menu" class="option-select-menu" :style="menuStyle" role="listbox">
+            <li v-for="item in items" :key="item.key" role="option" :aria-selected="item.key === model">
+              <button type="button" class="option-select-option" :class="{ 'is-selected': item.key === model }" @click="select(item)">
+                <span v-if="item.color" class="option-select-swatch" :title="item.color" :style="{ backgroundColor: item.color }"></span>
+                <img v-else-if="item.url" class="option-select-image" :src="item.url" :alt="item.label" />
+                <span>{{ item.label }}</span>
+              </button>
+            </li>
+          </ul>
+        </Teleport>
       </div>
 
       <div v-if="$slots.addon" class="option-select-addon" @click="isOpen = false">
@@ -264,13 +268,8 @@ defineExpose({ focus });
 }
 
 .option-select-menu {
-  position: absolute;
-  z-index: 20;
-  top: 100%;
-  left: 0;
-  right: 0;
+  z-index: 50;
   max-height: 16rem;
-  margin: 0.15rem 0 0;
   padding: 0.35rem 0;
   overflow-y: auto;
   list-style: none;
@@ -278,12 +277,6 @@ defineExpose({ focus });
   border: 1px solid #dbdbdb;
   border-radius: 4px;
   box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1);
-}
-
-.option-select-menu.is-up {
-  top: auto;
-  bottom: 100%;
-  margin: 0 0 0.15rem;
 }
 
 .option-select-option {

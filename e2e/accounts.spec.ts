@@ -42,6 +42,29 @@ test.describe('accounts', () => {
       await expect(page.getByText('No records found.')).toBeVisible();
     });
 
+    test('shows the full logo list when creating an institution from a modal', async ({ page, baseURL }) => {
+      await setupApp(page, baseURL);
+
+      await page.goto('/accounts/new');
+      await page.getByRole('button', { name: 'New institution' }).click();
+
+      const modal = page.locator('.modal.is-active');
+      await expect(modal.getByText(/new institution/i)).toBeVisible();
+      await modal.getByRole('button', { name: 'Logo *' }).click();
+
+      const menu = page.locator('.option-select-menu');
+      await expect(menu).toBeVisible();
+
+      const hitsMenu = await menu.evaluate((el) => {
+        const rect = el.getBoundingClientRect();
+        const node = document.elementFromPoint(rect.left + rect.width / 2, rect.bottom - 8);
+
+        return node?.closest('[role="listbox"]') === el;
+      });
+
+      expect(hitsMenu).toBe(true);
+    });
+
     test('creates a bank account', async ({ page, baseURL }) => {
       await setupApp(page, baseURL);
 
