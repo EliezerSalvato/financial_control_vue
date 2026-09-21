@@ -13,14 +13,19 @@ const resource: TagResourceItemApi = {
   },
 };
 
+const expectedTag = {
+  id: 'tag-1',
+  name: 'Trabalho',
+  color: '#112233',
+  active: true,
+  goalEndsOn: null,
+  currentGoal: null,
+  goals: [],
+};
+
 describe('tagFromResource', () => {
   it('mapeia o recurso para o domínio', () => {
-    expect(tagFromResource(resource)).toEqual({
-      id: 'tag-1',
-      name: 'Trabalho',
-      color: '#112233',
-      active: true,
-    });
+    expect(tagFromResource(resource)).toEqual(expectedTag);
   });
 
   it('usa o id do recurso e cor padrão quando o atributo falta', () => {
@@ -35,6 +40,38 @@ describe('tagFromResource', () => {
       name: 'Sem cor',
       color: '#000000',
       active: false,
+      goalEndsOn: null,
+      currentGoal: null,
+      goals: [],
+    });
+  });
+
+  it('mapeia a meta atual e o histórico ordenado por ano e mês', () => {
+    expect(
+      tagFromResource({
+        ...resource,
+        attributes: {
+          ...resource.attributes,
+          goalEndsOn: '2026-12-01',
+          currentGoal: {
+            id: 'goal-2',
+            type: 'tag_goal',
+            attributes: { id: 'goal-2', month: 8, year: 2026, value: '600.0' },
+          },
+          goals: [
+            { id: 'goal-2', type: 'tag_goal', attributes: { id: 'goal-2', month: 8, year: 2026, value: '600.0' } },
+            { id: 'goal-1', type: 'tag_goal', attributes: { id: 'goal-1', month: 1, year: 2026, value: '500.0' } },
+          ],
+        },
+      }),
+    ).toEqual({
+      ...expectedTag,
+      goalEndsOn: '2026-12-01',
+      currentGoal: { id: 'goal-2', month: 8, year: 2026, value: 600 },
+      goals: [
+        { id: 'goal-1', month: 1, year: 2026, value: 500 },
+        { id: 'goal-2', month: 8, year: 2026, value: 600 },
+      ],
     });
   });
 });

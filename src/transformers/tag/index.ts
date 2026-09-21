@@ -1,1 +1,1 @@
-export { tagFromResource, tagCollectionFromApi, tagShowFromApi, tagCreateFromApi, tagUpdateFromApi } from './tag';
+export { tagGoalFromResource, tagFromResource, tagCollectionFromApi, tagShowFromApi, tagCreateFromApi, tagUpdateFromApi } from './tag';

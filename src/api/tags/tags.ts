@@ -4,6 +4,8 @@ import type {
   TagCreatePayload,
   TagCreateResponseApi,
   TagCreateResult,
+  TagGoalUpdatePayload,
+  TagGoalUpdateResult,
   TagListParams,
   TagListResult,
   TagShowResult,
@@ -45,6 +47,15 @@ export async function createTag(payload: TagCreatePayload): Promise<TagCreateRes
 
 export async function updateTag(id: string | number, payload: TagUpdatePayload): Promise<TagUpdateResult> {
   const response = await apiRequest<TagCreateResponseApi>(`/api/v1/tags/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(keysToSnakeCase(payload)),
+  });
+
+  return tagUpdateFromApi(response);
+}
+
+export async function updateTagGoal(tagId: string | number, payload: TagGoalUpdatePayload): Promise<TagGoalUpdateResult> {
+  const response = await apiRequest<TagCreateResponseApi>(`/api/v1/tags/${tagId}/goals`, {
     method: 'PATCH',
     body: JSON.stringify(keysToSnakeCase(payload)),
   });

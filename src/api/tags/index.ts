@@ -1,1 +1,1 @@
-export { listTags, deleteTag, getTag, createTag, updateTag } from './tags';
+export { listTags, deleteTag, getTag, createTag, updateTag, updateTagGoal } from './tags';

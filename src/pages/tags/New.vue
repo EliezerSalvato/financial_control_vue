@@ -7,10 +7,12 @@ import { useNotificationStore } from '@/stores/notification';
 import { useRouter } from 'vue-router';
 import { onMounted, reactive, ref, useTemplateRef } from 'vue';
 import { randomHexColor } from '@/utils/color';
+import { tagGoalWriteFields, wantsTagGoal } from '@/utils/tagGoal';
 import ColorPicker from '@/components/inputs/ColorPicker.vue';
 import FormPanel from '@/components/FormPanel.vue';
 import InputText from '@/components/inputs/InputText.vue';
 import NotificationMessage from '@/components/NotificationMessage.vue';
+import TagGoalFields from '@/pages/tags/TagGoalFields.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -36,12 +38,27 @@ const form = reactive<TagForm>({
   name: '',
   color: randomHexColor(),
   active: true,
+  goalStartsOn: null,
+  goalValue: null,
+  goalEndsOn: null,
 });
 
-const { errors, validateWith, applyCatch } = useFormErrors(form);
+const { errors, applyCatch, createHandler } = useFormErrors(form);
 
 function validate(): boolean {
-  return validateWith((handler) => handler.checkBlank(['name', 'color']));
+  const handler = createHandler().checkBlank(['name', 'color']);
+
+  if (wantsTagGoal(form)) {
+    handler.checkBlank(['goalStartsOn', 'goalValue']);
+  }
+
+  if (form.goalStartsOn && form.goalEndsOn && form.goalEndsOn < form.goalStartsOn) {
+    handler.add('goalEndsOn', t('tags.errors.endsOnBeforeStartsOn'));
+  }
+
+  errors.value = handler.all;
+
+  return handler.isValid;
 }
 
 async function save() {
@@ -50,7 +67,13 @@ async function save() {
   loading.value = true;
 
   try {
-    const result = await createTag({ tag: { name: form.name, color: form.color } });
+    const result = await createTag({
+      tag: {
+        name: form.name,
+        color: form.color,
+        ...tagGoalWriteFields(form),
+      },
+    });
 
     if (props.modal) {
       emit('new:tag', result.tag);
@@ -79,6 +102,15 @@ onMounted(() => {
       </NotificationMessage>
 
       <InputText ref="nameInput" v-model="form.name" name="name" :label="t('tags.form.name')" required :errors="errors.name" />
+
+      <TagGoalFields
+        v-model:goal-starts-on="form.goalStartsOn"
+        v-model:goal-value="form.goalValue"
+        v-model:goal-ends-on="form.goalEndsOn"
+        :errors="errors"
+        :starts-required="wantsTagGoal(form)"
+        :value-required="wantsTagGoal(form)"
+      />
 
       <ColorPicker v-model="form.color" name="color" :label="t('tags.form.color')" required :errors="errors.color" />
     </template>

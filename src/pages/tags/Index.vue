@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { useNotificationStore } from '@/stores/notification';
 import { booleanFilterValue, parseActiveQuery, queryString, useIndexListQuery } from '@/composables/useIndexListQuery';
 import { deleteTag, listTags } from '@/api/tags';
+import { formatCurrency } from '@/utils/money';
 import { notifyApiError } from '@/utils/notifyApiError';
 import { computed, reactive, ref } from 'vue';
 import IndexPanel from '@/components/IndexPanel.vue';
@@ -13,7 +14,7 @@ import Select from '@/components/inputs/Select.vue';
 
 type SortField = 'name' | 'active';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const notificationStore = useNotificationStore();
 
 const items = ref<Tag[]>([]);
@@ -104,6 +105,7 @@ async function deleteItem(itemId: string) {
       <td>
         <InputText v-model="filters.name" name="name" :errors="[]" :placeholder="t('filters.byName')" @change:value="filterNameChange" />
       </td>
+      <td class="goal is-hidden-mobile"></td>
       <td class="is-hidden-mobile">
         <Select
           v-model="filters.active"
@@ -126,6 +128,7 @@ async function deleteItem(itemId: string) {
           </span>
         </span>
       </th>
+      <th class="goal is-hidden-mobile">{{ t('tags.columns.goal') }}</th>
       <th class="sortable active is-hidden-mobile" @click="toggleSort('active')">
         <span class="sortable-label">
           {{ t('tags.columns.active') }}
@@ -144,6 +147,7 @@ async function deleteItem(itemId: string) {
     </template>
 
     <template #table-item="{ item }">
+      <td class="goal is-hidden-mobile">{{ item.currentGoal ? formatCurrency(item.currentGoal.value, locale) : '—' }}</td>
       <td class="is-hidden-mobile">
         <span class="icon">
           <i class="fas" :class="item.active ? 'fa-check has-text-success' : 'fa-times has-text-danger'"></i>
@@ -155,6 +159,11 @@ async function deleteItem(itemId: string) {
 <style scoped>
 .active {
   min-width: 175px;
+}
+
+.goal {
+  min-width: 120px;
+  text-align: right;
 }
 
 .color {

@@ -170,7 +170,7 @@ describe('useTransactionForm', () => {
       },
     });
     vi.mocked(listTags).mockResolvedValue({
-      tags: [{ id: 'tag-1', name: 'Trabalho', color: '#000', active: true }],
+      tags: [{ id: 'tag-1', name: 'Trabalho', color: '#000', active: true, goalEndsOn: null, currentGoal: null, goals: [] }],
       pagination: {
         currentPage: 1,
         prevPage: null,

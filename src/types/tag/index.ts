@@ -1,5 +1,8 @@
 export type {
   Tag,
+  TagGoal,
+  TagGoalAttributesApi,
+  TagGoalResourceItemApi,
   TagAttributesApi,
   TagResourceItemApi,
   TagCollectionResponseApi,
@@ -14,4 +17,7 @@ export type {
   TagCreateResult,
   TagUpdateResult,
   TagShowResult,
+  TagGoalForm,
+  TagGoalUpdatePayload,
+  TagGoalUpdateResult,
 } from './tag';
