@@ -2,7 +2,8 @@
 import { useAppLocale } from '@/composables/useAppLocale';
 import { useI18n } from 'vue-i18n';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
-import { getCalendarLang, getFrontDateFormat, getTodayIsoDate } from '@/locales/locale';
+import { monthStartFromIso } from '@/utils/isoDate';
+import { FRONT_MONTH_YEAR_FORMAT, getCalendarLang, getFrontDateFormat, getTodayIsoDate } from '@/locales/locale';
 
 const { t } = useI18n();
 const model = defineModel<string | null>();
@@ -16,11 +17,15 @@ const props = withDefaults(
     required?: boolean;
     disabled?: boolean;
     withDefaultDate?: boolean;
+    precision?: 'day' | 'month';
+    min?: string | null;
   }>(),
   {
     required: false,
     disabled: false,
     withDefaultDate: false,
+    precision: 'day',
+    min: null,
   },
 );
 
@@ -32,8 +37,17 @@ const input = useTemplateRef<HTMLInputElement>('input');
 const draft = ref('');
 
 const { appLocale } = useAppLocale();
-const dateFormat = computed(() => getFrontDateFormat(appLocale.value));
+const monthOnly = computed(() => props.precision === 'month');
+const dateFormat = computed(() => (monthOnly.value ? FRONT_MONTH_YEAR_FORMAT : getFrontDateFormat(appLocale.value)));
 const calendarLang = computed(() => getCalendarLang(appLocale.value));
+const nativeValue = computed(() => (monthOnly.value ? model.value?.slice(0, 7) : model.value) ?? '');
+const nativeMin = computed(() => nativeBound(props.min));
+
+function nativeBound(iso: string | null | undefined): string | undefined {
+  if (!iso) return undefined;
+
+  return monthOnly.value ? iso.slice(0, 7) : iso;
+}
 
 function isoToDisplay(iso: string | null | undefined, format: string): string {
   if (!iso) return '';
@@ -43,17 +57,20 @@ function isoToDisplay(iso: string | null | undefined, format: string): string {
   const month = match?.[2];
   const day = match?.[3];
 
-  if (!year || !month || !day) return '';
+  if (!year || !month || (!monthOnly.value && !day)) return '';
 
-  return format.replace('YYYY', year).replace('MM', month).replace('DD', day);
+  return format
+    .replace('YYYY', year)
+    .replace('MM', month)
+    .replace('DD', day ?? '');
 }
 
 function maskDate(value: string): string {
-  const digits = value.replace(/\D/g, '').slice(0, 8);
+  const digits = value.replace(/\D/g, '').slice(0, monthOnly.value ? 6 : 8);
 
   if (digits.length <= 2) return digits;
 
-  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  if (digits.length <= 4 || monthOnly.value) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
 
   return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
@@ -66,6 +83,19 @@ function isValidDate(year: number, month: number, day: number): boolean {
 
 function displayToIso(value: string, format: string): string | null {
   const digits = value.replace(/\D/g, '');
+
+  if (monthOnly.value) {
+    if (digits.length !== 6) return null;
+
+    const month = digits.slice(0, 2);
+    const year = digits.slice(2, 6);
+    const yearNumber = Number(year);
+    const monthNumber = Number(month);
+
+    if (!Number.isInteger(yearNumber) || yearNumber < 1 || monthNumber < 1 || monthNumber > 12) return null;
+
+    return `${year}-${month}-01`;
+  }
 
   if (digits.length !== 8) return null;
 
@@ -114,7 +144,12 @@ function updateFromPicker(event: Event) {
 
   const value = (event.target as HTMLInputElement).value || null;
 
-  setModel(value);
+  if (!value) {
+    setModel(null);
+    return;
+  }
+
+  setModel(monthOnly.value ? (monthStartFromIso(`${value}-01`) ?? `${value}-01`) : value);
 }
 
 function syncDraftFromModel() {
@@ -127,11 +162,13 @@ function focus() {
 
 defineExpose({ focus });
 
-watch([() => model.value, dateFormat], syncDraftFromModel, { immediate: true });
+watch([() => model.value, dateFormat, monthOnly], syncDraftFromModel, { immediate: true });
 
 onMounted(() => {
   if (!model.value && props.withDefaultDate) {
-    setModel(getTodayIsoDate(appLocale.value));
+    const today = getTodayIsoDate(appLocale.value);
+
+    setModel(monthOnly.value ? (monthStartFromIso(today) ?? today) : today);
   }
 });
 </script>
@@ -149,7 +186,7 @@ onMounted(() => {
         class="input"
         inputmode="numeric"
         autocomplete="off"
-        maxlength="10"
+        :maxlength="monthOnly ? 7 : 10"
         :name="name"
         :lang="appLocale"
         :value="draft"
@@ -163,11 +200,12 @@ onMounted(() => {
         <i class="fas fa-calendar"></i>
       </span>
       <input
-        :key="calendarLang"
-        type="date"
+        :key="`${calendarLang}-${precision}`"
+        :type="monthOnly ? 'month' : 'date'"
         class="calendar-native"
         :lang="calendarLang"
-        :value="model ?? ''"
+        :value="nativeValue"
+        :min="nativeMin"
         :disabled="disabled"
         tabindex="-1"
         @input="updateFromPicker"

@@ -17,6 +17,20 @@ export function toIsoDate(year: number, month: number, day: number): string {
   return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
+export function toMonthStartIso(year: number, month: number): string {
+  return toIsoDate(year, month, 1);
+}
+
+export function monthStartFromIso(iso: string): string | null {
+  const parsed = parseIsoDate(iso);
+
+  return parsed ? toMonthStartIso(parsed.year, parsed.month) : null;
+}
+
+export function formatMonthYear(year: number, month: number): string {
+  return `${String(month).padStart(2, '0')}/${year}`;
+}
+
 export function makeIsoDateClamped(year: number, month: number, day: number): string {
   const lastDay = new Date(year, month, 0).getDate();
 

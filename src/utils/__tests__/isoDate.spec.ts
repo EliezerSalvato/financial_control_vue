@@ -2,11 +2,14 @@ import { describe, expect, it } from 'vitest';
 import {
   addDaysToIsoDate,
   addMonthsToIsoDate,
+  formatMonthYear,
   makeIsoDateClamped,
+  monthStartFromIso,
   monthsBetweenInclusive,
   parseIsoDate,
   shiftYearMonth,
   toIsoDate,
+  toMonthStartIso,
   yearMonthTotal,
 } from '@/utils/isoDate';
 
@@ -27,6 +30,9 @@ describe('parseIsoDate', () => {
 describe('toIsoDate / makeIsoDateClamped', () => {
   it('preenche com zeros à esquerda', () => {
     expect(toIsoDate(2026, 3, 5)).toBe('2026-03-05');
+    expect(toMonthStartIso(2026, 7)).toBe('2026-07-01');
+    expect(monthStartFromIso('2026-07-31')).toBe('2026-07-01');
+    expect(formatMonthYear(2026, 7)).toBe('07/2026');
   });
 
   it('limita o dia ao último do mês, inclusive em ano bissexto', () => {

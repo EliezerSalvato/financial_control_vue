@@ -39,8 +39,20 @@ export function applyDocumentLocale(locale: AppLocale): void {
   document.documentElement.lang = locale;
 }
 
+export const FRONT_MONTH_YEAR_FORMAT = 'MM/YYYY';
+
 export function getFrontDateFormat(locale: AppLocale): string {
   return locale === 'pt-BR' ? 'DD/MM/YYYY' : 'MM/DD/YYYY';
+}
+
+export function formatFrontMonthYear(iso: string): string {
+  const match = /^(\d{4})-(\d{2})/.exec(iso);
+  const year = match?.[1];
+  const month = match?.[2];
+
+  if (!year || !month) return iso;
+
+  return `${month}/${year}`;
 }
 
 export function formatFrontDate(iso: string, locale: AppLocale): string {

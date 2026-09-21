@@ -4,6 +4,7 @@ import {
   ensureLocaleCookie,
   formatFrontDate,
   formatFrontDateTime,
+  formatFrontMonthYear,
   getCalendarLang,
   getCurrencyCode,
   getCurrencySymbol,
@@ -45,6 +46,14 @@ describe('formatFrontDate', () => {
     expect(formatFrontDate('2026-03-15', 'en')).toBe('03/15/2026');
     expect(formatFrontDate('2026-03-15', 'pt-BR')).toBe('15/03/2026');
     expect(formatFrontDate('invalid', 'en')).toBe('invalid');
+  });
+});
+
+describe('formatFrontMonthYear', () => {
+  it('formata só mês e ano como MM/YYYY', () => {
+    expect(formatFrontMonthYear('2026-07-01')).toBe('07/2026');
+    expect(formatFrontMonthYear('2026-07-31')).toBe('07/2026');
+    expect(formatFrontMonthYear('invalid')).toBe('invalid');
   });
 });
 
