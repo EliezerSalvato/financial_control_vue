@@ -50,8 +50,9 @@ function toggleGroup(id: string) {
             <th>{{ nameColumnLabel }}</th>
             <th>{{ t('goals.columns.value') }}</th>
             <th>{{ t('goals.columns.goal') }}</th>
-            <th>{{ t('goals.columns.diff') }}</th>
-            <th colspan="2">{{ t('goals.columns.percent') }}</th>
+            <th class="is-hidden-touch">{{ t('goals.columns.diff') }}</th>
+            <th class="is-hidden-mobile">{{ t('goals.columns.percent') }}</th>
+            <th class="expand-header"></th>
           </tr>
         </thead>
 
@@ -64,8 +65,8 @@ function toggleGroup(id: string) {
               <td>{{ group.name }}</td>
               <td>{{ formatValue(group.total) }}</td>
               <td>{{ formatValue(group.goal) }}</td>
-              <td :class="goalDiffClass(group.diff, group.transactionKind)">{{ formatValue(group.diff) }}</td>
-              <td class="goal-percent">{{ formatPercent(group.percent) }}</td>
+              <td class="is-hidden-touch" :class="goalDiffClass(group.diff, group.transactionKind)">{{ formatValue(group.diff) }}</td>
+              <td class="goal-percent is-hidden-mobile">{{ formatPercent(group.percent) }}</td>
               <td class="expand-header">
                 <button
                   type="button"
