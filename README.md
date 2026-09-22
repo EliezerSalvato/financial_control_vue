@@ -3,6 +3,8 @@
 Vue SPA for personal financial control: monthly statements, transactions, accounts, credit cards, and notifications.
 Companion frontend for the [Financial Control Ruby API](https://github.com/EliezerSalvato/financial_control_ruby_api).
 
+**Live:** [https://vue.financialcontrol.app.br/](https://vue.financialcontrol.app.br/)
+
 ## Tech stack
 
 <table>
@@ -224,6 +226,8 @@ Action Cable is used at `VITE_CABLE_URL`. The browser cannot set `Authorization`
 | `MonthlyStatusChannel` | Monthly statement for a given `month` + `year`   | `{ processing, last_processed_at }`  |
 
 ## Deployment
+
+Production app: [https://vue.financialcontrol.app.br/](https://vue.financialcontrol.app.br/)
 
 Configured for Vercel (`vercel.json`):
 
