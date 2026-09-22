@@ -36,6 +36,7 @@ export default {
   },
   menu: {
     monthlyStatement: 'Extrato Mensal',
+    goals: 'Metas',
     filters: 'Filtros',
     incomes: 'Receitas',
     expenses: 'Despesas',

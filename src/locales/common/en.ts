@@ -36,6 +36,7 @@ export default {
   },
   menu: {
     monthlyStatement: 'Monthly Statement',
+    goals: 'Goals',
     filters: 'Filters',
     incomes: 'Incomes',
     expenses: 'Expenses',

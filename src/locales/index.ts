@@ -18,6 +18,8 @@ import transactionsEn from './transactions/en';
 import transactionsPtBr from './transactions/pt-BR';
 import monthlyStatementsEn from './monthlyStatements/en';
 import monthlyStatementsPtBr from './monthlyStatements/pt-BR';
+import goalsEn from './goals/en';
+import goalsPtBr from './goals/pt-BR';
 import notificationsEn from './notifications/en';
 import notificationsPtBr from './notifications/pt-BR';
 import authEn from './auth/en';
@@ -41,6 +43,7 @@ const i18n = createI18n({
       creditCards: creditCardsEn,
       transactions: transactionsEn,
       monthlyStatements: monthlyStatementsEn,
+      goals: goalsEn,
       notifications: notificationsEn,
       auth: authEn,
       user: userEn,
@@ -58,6 +61,7 @@ const i18n = createI18n({
       creditCards: creditCardsPtBr,
       transactions: transactionsPtBr,
       monthlyStatements: monthlyStatementsPtBr,
+      goals: goalsPtBr,
       notifications: notificationsPtBr,
       auth: authPtBr,
       user: userPtBr,

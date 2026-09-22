@@ -3,6 +3,7 @@ import type { AccountRecord } from './accounts';
 import type { CategoryRecord } from './categories';
 import type { CreditCardRecord, InvoiceSettlementRecord } from './credit_cards';
 import type { InstitutionRecord } from './institutions';
+import type { GoalTargetRecord, GoalTransactionRecord } from './goals';
 import type { MonthlyStatementRecord, MonthlyStatementTransferRecord } from './monthly_statements';
 import type { MonthlyStatusRecord } from './monthly_statuses';
 import type { NotificationRecord } from './notifications';
@@ -12,6 +13,7 @@ import { AccountsApi, mockAccountsApi } from './accounts';
 import { GuestAuthApi, mockGuestAuthApi } from './auth';
 import { CategoriesApi, mockCategoriesApi } from './categories';
 import { CreditCardsApi, mockCreditCardsApi } from './credit_cards';
+import { GoalsApi, mockGoalsApi } from './goals';
 import { InstitutionsApi, mockInstitutionsApi } from './institutions';
 import { mockMonthlyStatementsApi, MonthlyStatementsApi } from './monthly_statements';
 import { mockMonthlyStatusesApi, MonthlyStatusesApi } from './monthly_statuses';
@@ -30,6 +32,8 @@ type SetupOptions = {
   accounts?: AccountRecord[];
   creditCards?: CreditCardRecord[];
   transactions?: TransactionRecord[];
+  goalTransactions?: GoalTransactionRecord[];
+  goalTargets?: GoalTargetRecord[];
   monthlyStatements?: MonthlyStatementRecord[];
   monthlyStatementTransfers?: MonthlyStatementTransferRecord[];
   monthlyStatuses?: MonthlyStatusRecord[];
@@ -50,6 +54,7 @@ export async function setupApp(page: Page, baseURL: string | undefined, options:
   const accounts = new AccountsApi(options.accounts, options.perPage);
   const creditCards = new CreditCardsApi(options.creditCards, options.perPage);
   const transactions = new TransactionsApi(options.transactions, options.perPage);
+  const goals = new GoalsApi(options.goalTransactions, options.goalTargets);
   const monthlyStatements = new MonthlyStatementsApi(options.monthlyStatements, options.monthlyStatementTransfers);
   const monthlyStatuses = new MonthlyStatusesApi(options.monthlyStatuses);
   const notifications = new NotificationsApi(options.notifications ?? []);
@@ -75,6 +80,7 @@ export async function setupApp(page: Page, baseURL: string | undefined, options:
   await mockAccountsApi(page, accounts);
   await mockCreditCardsApi(page, creditCards);
   await mockTransactionsApi(page, transactions);
+  await mockGoalsApi(page, goals);
   await mockMonthlyStatementsApi(page, monthlyStatements);
   await mockMonthlyStatusesApi(page, monthlyStatuses);
   await mockSettlementsApi(page, settlements);
@@ -89,6 +95,7 @@ export async function setupApp(page: Page, baseURL: string | undefined, options:
     accounts,
     creditCards,
     transactions,
+    goals,
     monthlyStatements,
     monthlyStatuses,
     notifications,

@@ -6,6 +6,7 @@ import NotFound from '@/pages/NotFound.vue';
 import accountsRoutes from '@/router/accounts';
 import categoriesRoutes from '@/router/categories';
 import creditCardsRoutes from '@/router/credit_cards';
+import goalsRoutes from '@/router/goals';
 import institutionsRoutes from '@/router/institutions';
 import notificationsRoutes from '@/router/notifications';
 import tagsRoutes from '@/router/tags';
@@ -23,6 +24,7 @@ const router = createRouter({
     },
     ...transactionsRoutes,
     ...creditCardsRoutes,
+    ...goalsRoutes,
     ...accountsRoutes,
     ...institutionsRoutes,
     ...categoriesRoutes,

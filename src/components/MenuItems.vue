@@ -30,6 +30,9 @@ async function onLogout() {
       <RouterLink class="navbar-item" active-class="is-active" to="/">
         {{ t('menu.monthlyStatement') }}
       </RouterLink>
+      <RouterLink class="navbar-item" active-class="is-active" to="/goals">
+        {{ t('menu.goals') }}
+      </RouterLink>
       <RouterLink class="navbar-item" active-class="is-active" to="/transactions">
         {{ t('menu.transactions') }}
       </RouterLink>
