@@ -98,7 +98,7 @@ function close() {
 function previousRecurrenceValue(startsOn: string): number | null {
   const startsOnTotal = yearMonthTotal(startsOn);
 
-  if (startsOnTotal == null) return props.initialValue;
+  if (startsOnTotal == null) return null;
 
   let previous: TransactionRecurrence | null = null;
   let previousTotal = Number.NEGATIVE_INFINITY;
@@ -106,7 +106,8 @@ function previousRecurrenceValue(startsOn: string): number | null {
   for (const recurrence of props.recurrences) {
     const total = yearMonthTotal(recurrence.startsOn);
 
-    if (total == null || total > startsOnTotal) continue;
+    // Only months before startsOn — same-month edits must keep their own value.
+    if (total == null || total >= startsOnTotal) continue;
 
     if (total >= previousTotal) {
       previous = recurrence;
@@ -114,7 +115,7 @@ function previousRecurrenceValue(startsOn: string): number | null {
     }
   }
 
-  return previous?.value ?? props.initialValue;
+  return previous?.value ?? null;
 }
 
 function validate(): boolean {
@@ -131,8 +132,8 @@ function validate(): boolean {
     }
   }
 
-  if (form.value != null) {
-    const previousValue = startsOn ? previousRecurrenceValue(startsOn) : props.initialValue;
+  if (form.value != null && startsOn) {
+    const previousValue = previousRecurrenceValue(startsOn);
 
     if (previousValue != null && form.value === previousValue) {
       handler.add('value', t('transactions.errors.valueMustDifferFromPreviousRecurrence'));
