@@ -4,8 +4,8 @@ import { createTransactionRecurrence } from '@/api/transactions';
 import { useAppLocale } from '@/composables/useAppLocale';
 import { useFormErrors } from '@/composables/useFormErrors';
 import { useI18n } from 'vue-i18n';
-import { makeIsoDateClamped, parseIsoDate, yearMonthTotal } from '@/utils/isoDate';
 import { getZonedDateParts } from '@/locales/locale';
+import { monthStartFromIso, parseIsoDate, toMonthStartIso, yearMonthTotal } from '@/utils/isoDate';
 import { reactive, ref, watch } from 'vue';
 import Calendar from '@/components/inputs/Calendar.vue';
 import CheckBox from '@/components/inputs/CheckBox.vue';
@@ -61,7 +61,7 @@ function defaultStartsOn(startsOn: string | null): string | null {
 
   const parsed = parseIsoDate(startsOn);
 
-  if (!parsed) return startsOn;
+  if (!parsed) return monthStartFromIso(startsOn) ?? startsOn;
 
   const today = getZonedDateParts(new Date(), appLocale.value);
   const currentYear = today.year;
@@ -74,14 +74,14 @@ function defaultStartsOn(startsOn: string | null): string | null {
     const resultYear = Math.floor(nextTotal / 12);
     const resultMonth = (nextTotal % 12) + 1;
 
-    return makeIsoDateClamped(resultYear, resultMonth, parsed.day);
+    return toMonthStartIso(resultYear, resultMonth);
   }
 
   if (currentTotal > startsOnTotal) {
-    return makeIsoDateClamped(currentYear, currentMonth, parsed.day);
+    return toMonthStartIso(currentYear, currentMonth);
   }
 
-  return startsOn;
+  return toMonthStartIso(parsed.year, parsed.month);
 }
 
 function resetForm() {
@@ -131,19 +131,26 @@ function previousRecurrenceValue(startsOn: string): number | null {
 
 function validate(): boolean {
   const handler = createHandler().checkBlank(['value', 'startsOn']);
+  const startsOn = form.startsOn ? (monthStartFromIso(form.startsOn) ?? form.startsOn) : null;
 
-  if (form.startsOn) {
-    if (isBeforeCurrentMonth(form.startsOn)) {
+  if (startsOn) {
+    if (isBeforeCurrentMonth(startsOn)) {
       handler.add('startsOn', t('transactions.errors.startsOnInThePast'));
     }
 
-    if (props.endsOn && form.startsOn > props.endsOn) {
-      handler.add('startsOn', t('transactions.errors.startsOnAfterEndsOn'));
+    if (props.endsOn) {
+      const endsOn = monthStartFromIso(props.endsOn) ?? props.endsOn;
+      const startsTotal = yearMonthTotal(startsOn);
+      const endsTotal = yearMonthTotal(endsOn);
+
+      if (startsTotal != null && endsTotal != null && startsTotal > endsTotal) {
+        handler.add('startsOn', t('transactions.errors.startsOnAfterEndsOn'));
+      }
     }
   }
 
   if (form.value != null) {
-    const previousValue = form.startsOn ? previousRecurrenceValue(form.startsOn) : props.initialValue;
+    const previousValue = startsOn ? previousRecurrenceValue(startsOn) : props.initialValue;
 
     if (previousValue != null && form.value === previousValue) {
       handler.add('value', t('transactions.errors.valueMustDifferFromPreviousRecurrence'));
@@ -164,7 +171,7 @@ async function save() {
     const result = await createTransactionRecurrence(props.transactionId, {
       transactionRecurrence: {
         value: form.value ?? 0,
-        startsOn: form.startsOn as string,
+        startsOn: monthStartFromIso(form.startsOn as string) ?? (form.startsOn as string),
         changeForNextMonths: form.changeForNextMonths,
       },
     });
@@ -200,6 +207,7 @@ watch(
           <Calendar
             v-model="form.startsOn"
             name="startsOn"
+            precision="month"
             :label="t('transactions.changeRecurrence.startsOn')"
             required
             :error="errors.startsOn[0]"
