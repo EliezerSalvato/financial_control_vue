@@ -81,7 +81,6 @@ export default {
     installmentsCountGreaterThanOne: 'deve ser maior que 1',
     endsOnBeforeStartsOn: 'deve ser igual ou posterior à data de início',
     startsOnAfterEndsOn: 'deve ser igual ou anterior ao mês de fim',
-    startsOnInThePast: 'não pode ser anterior ao mês atual',
     valueMustDifferFromPreviousRecurrence: 'deve ser diferente do valor da recorrência anterior',
   },
   modalDelete: {

@@ -95,18 +95,6 @@ function close() {
   emit('update:open', false);
 }
 
-function isBeforeCurrentMonth(isoDate: string): boolean {
-  const parsed = parseIsoDate(isoDate);
-
-  if (!parsed) return false;
-
-  const today = getZonedDateParts(new Date(), appLocale.value);
-  const currentTotal = today.year * 12 + (today.month - 1);
-  const dateTotal = parsed.year * 12 + (parsed.month - 1);
-
-  return dateTotal < currentTotal;
-}
-
 function previousRecurrenceValue(startsOn: string): number | null {
   const startsOnTotal = yearMonthTotal(startsOn);
 
@@ -133,19 +121,13 @@ function validate(): boolean {
   const handler = createHandler().checkBlank(['value', 'startsOn']);
   const startsOn = form.startsOn ? (monthStartFromIso(form.startsOn) ?? form.startsOn) : null;
 
-  if (startsOn) {
-    if (isBeforeCurrentMonth(startsOn)) {
-      handler.add('startsOn', t('transactions.errors.startsOnInThePast'));
-    }
+  if (startsOn && props.endsOn) {
+    const endsOn = monthStartFromIso(props.endsOn) ?? props.endsOn;
+    const startsTotal = yearMonthTotal(startsOn);
+    const endsTotal = yearMonthTotal(endsOn);
 
-    if (props.endsOn) {
-      const endsOn = monthStartFromIso(props.endsOn) ?? props.endsOn;
-      const startsTotal = yearMonthTotal(startsOn);
-      const endsTotal = yearMonthTotal(endsOn);
-
-      if (startsTotal != null && endsTotal != null && startsTotal > endsTotal) {
-        handler.add('startsOn', t('transactions.errors.startsOnAfterEndsOn'));
-      }
+    if (startsTotal != null && endsTotal != null && startsTotal > endsTotal) {
+      handler.add('startsOn', t('transactions.errors.startsOnAfterEndsOn'));
     }
   }
 
