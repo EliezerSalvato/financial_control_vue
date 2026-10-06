@@ -2,7 +2,9 @@ import type { Page } from '@playwright/test';
 import type { AccountRecord } from './accounts';
 import type { CategoryRecord } from './categories';
 import type { CreditCardRecord, InvoiceSettlementRecord } from './credit_cards';
+import type { ImportRuleRecord } from './import_rules';
 import type { InstitutionRecord } from './institutions';
+import type { ImportPreviewRowRecord } from './transaction_imports';
 import type { GoalTargetRecord, GoalTransactionRecord } from './goals';
 import type { MonthlyStatementRecord, MonthlyStatementTransferRecord } from './monthly_statements';
 import type { MonthlyStatusRecord } from './monthly_statuses';
@@ -14,6 +16,7 @@ import { GuestAuthApi, mockGuestAuthApi } from './auth';
 import { CategoriesApi, mockCategoriesApi } from './categories';
 import { CreditCardsApi, mockCreditCardsApi } from './credit_cards';
 import { GoalsApi, mockGoalsApi } from './goals';
+import { ImportRulesApi, mockImportRulesApi } from './import_rules';
 import { InstitutionsApi, mockInstitutionsApi } from './institutions';
 import { mockMonthlyStatementsApi, MonthlyStatementsApi } from './monthly_statements';
 import { mockMonthlyStatusesApi, MonthlyStatusesApi } from './monthly_statuses';
@@ -21,6 +24,7 @@ import { mockNotificationsApi, NotificationsApi } from './notifications';
 import { mockProfileApi, ProfileApi } from './profile';
 import { mockSettlementsApi, SettlementsApi } from './settlements';
 import { mockTagsApi, TagsApi } from './tags';
+import { mockTransactionImportsApi, TransactionImportsApi } from './transaction_imports';
 import { mockTransactionsApi, TransactionsApi } from './transactions';
 import { createSessionState, mockCable, mockSessionRefresh, setLocaleCookie } from './app';
 
@@ -40,6 +44,8 @@ type SetupOptions = {
   settledTransactions?: SettledTransactionRecord[];
   invoiceSettlements?: InvoiceSettlementRecord[];
   notifications?: NotificationRecord[];
+  importRules?: ImportRuleRecord[];
+  importPreviewRows?: ImportPreviewRowRecord[];
   perPage?: number;
 };
 
@@ -59,6 +65,7 @@ export async function setupApp(page: Page, baseURL: string | undefined, options:
   const monthlyStatuses = new MonthlyStatusesApi(options.monthlyStatuses);
   const notifications = new NotificationsApi(options.notifications ?? []);
   const settlements = new SettlementsApi();
+  const importRules = new ImportRulesApi(options.importRules, options.perPage);
 
   if (options.settledTransactions) {
     transactions.settledTransactions = options.settledTransactions.map((settled) => ({ ...settled }));
@@ -70,6 +77,7 @@ export async function setupApp(page: Page, baseURL: string | undefined, options:
 
   await setLocaleCookie(page, baseURL);
   const cable = await mockCable(page);
+  const transactionImports = new TransactionImportsApi(cable, options.importPreviewRows);
   await mockSessionRefresh(page, session);
   await mockProfileApi(page, profile);
   await mockGuestAuthApi(page, auth);
@@ -80,6 +88,9 @@ export async function setupApp(page: Page, baseURL: string | undefined, options:
   await mockAccountsApi(page, accounts);
   await mockCreditCardsApi(page, creditCards);
   await mockTransactionsApi(page, transactions);
+  // Registered after transactions: Playwright matches the latest route first, and these paths live under /transactions.
+  await mockTransactionImportsApi(page, transactionImports);
+  await mockImportRulesApi(page, importRules);
   await mockGoalsApi(page, goals);
   await mockMonthlyStatementsApi(page, monthlyStatements);
   await mockMonthlyStatusesApi(page, monthlyStatuses);
@@ -100,6 +111,8 @@ export async function setupApp(page: Page, baseURL: string | undefined, options:
     monthlyStatuses,
     notifications,
     settlements,
+    importRules,
+    transactionImports,
     cable,
   };
 }
