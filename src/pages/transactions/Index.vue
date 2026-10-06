@@ -10,6 +10,7 @@ import { notifyApiError } from '@/utils/notifyApiError';
 import { computed, reactive, ref } from 'vue';
 import IndexPanel from '@/components/IndexPanel.vue';
 import InputText from '@/components/inputs/InputText.vue';
+import ModalImportCsv from '@/pages/transactions/ModalImportCsv.vue';
 import Select from '@/components/inputs/Select.vue';
 
 const TRANSACTION_KINDS = new Set<TransactionKind>(['income', 'expense', 'transfer_between_accounts']);
@@ -22,6 +23,7 @@ type SortField = 'description' | 'kind' | 'status' | 'payment_method' | 'recurre
 const { t, locale } = useI18n();
 const notificationStore = useNotificationStore();
 
+const importModalOpen = ref(false);
 const items = ref<Transaction[]>([]);
 const pagination = ref<Pagination | null>(null);
 
@@ -239,6 +241,21 @@ async function deleteItem(itemId: string) {
     @change:page="changePage"
     @delete:item="deleteItem"
   >
+    <template #header-actions>
+      <button type="button" class="button is-info" @click="importModalOpen = true">
+        <i class="fas fa-file-csv" aria-hidden="true"></i>
+        <b class="is-hidden-touch">{{ t('transactions.importCsv') }}</b>
+      </button>
+      <router-link
+        class="button"
+        :to="{ name: 'importRules' }"
+        :aria-label="t('transactions.importRulesLabel')"
+        :title="t('transactions.importRulesLabel')"
+      >
+        <i class="fas fa-cog" aria-hidden="true"></i>
+      </router-link>
+    </template>
+
     <template #table-filters>
       <td>
         <InputText
@@ -335,9 +352,15 @@ async function deleteItem(itemId: string) {
       </td>
     </template>
   </IndexPanel>
+
+  <ModalImportCsv v-model:open="importModalOpen" />
 </template>
 
 <style scoped>
+.button b {
+  margin-left: 5px;
+}
+
 .status {
   min-width: 130px;
 }

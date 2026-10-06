@@ -1,4 +1,34 @@
 export default {
+  importCsv: 'Importar CSV',
+  importRulesLabel: 'Regras de importação',
+  import: {
+    file: 'Arquivo CSV',
+    chooseFile: 'Escolher arquivo CSV…',
+    noFileSelected: 'Nenhum arquivo selecionado',
+    submit: 'Importar',
+    progress: '{processed} de {total} linhas processadas ({percent}%)',
+    nothingToReview: 'Nenhuma linha nova para revisar: todas já foram importadas ou falharam.',
+    failed: '{count} com erro',
+    tooManyRows: 'O arquivo deve ter no máximo {max} linhas.',
+  },
+  importPage: {
+    title: 'Revisar importação',
+    filterEmpty: 'Vazio',
+    applyToSelected: 'Aplicar a {count} linhas selecionadas',
+    selectAll: 'Selecionar todas',
+    submit: 'Importar {count} transações',
+    progress: '{processed} de {total} linhas importadas ({percent}%)',
+    created: '{count} criadas',
+    invalidRows:
+      'Preencha data, descrição, valor e categoria em todas as linhas selecionadas. Na recorrência parcelada, informe o consumo do limite e o número de parcelas (maior que 1).',
+    backToTransactions: 'Voltar para transações',
+    statuses: {
+      created: 'Criada',
+      skip: 'Já importada',
+      ignored: 'Ignorada',
+      error: 'Erro',
+    },
+  },
   columns: {
     description: 'Descrição',
     kind: 'Tipo',

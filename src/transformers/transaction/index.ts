@@ -7,3 +7,4 @@ export {
   transactionCancelFromApi,
 } from './transaction';
 export { settledTransactionFromResource, settledTransactionCollectionFromApi } from './settledTransaction';
+export { transactionImportEventFromApi, transactionImportPreviewFromApi } from './import';

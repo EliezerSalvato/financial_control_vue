@@ -1,4 +1,34 @@
 export default {
+  importCsv: 'Import from CSV',
+  importRulesLabel: 'Import rules',
+  import: {
+    file: 'CSV file',
+    chooseFile: 'Choose a CSV file…',
+    noFileSelected: 'No file selected',
+    submit: 'Import',
+    progress: '{processed} of {total} rows processed ({percent}%)',
+    nothingToReview: 'No new rows to review: all were already imported or failed.',
+    failed: '{count} with errors',
+    tooManyRows: 'The file must have at most {max} rows.',
+  },
+  importPage: {
+    title: 'Review import',
+    filterEmpty: 'Empty',
+    applyToSelected: 'Apply to {count} selected rows',
+    selectAll: 'Select all',
+    submit: 'Import {count} transactions',
+    progress: '{processed} of {total} rows imported ({percent}%)',
+    created: '{count} created',
+    invalidRows:
+      'Fill in date, description, value and category on every selected row. For installment recurrence, set the limit consumption and the installments count (greater than 1).',
+    backToTransactions: 'Back to transactions',
+    statuses: {
+      created: 'Created',
+      skip: 'Already imported',
+      ignored: 'Ignored',
+      error: 'Error',
+    },
+  },
   columns: {
     description: 'Description',
     kind: 'Kind',

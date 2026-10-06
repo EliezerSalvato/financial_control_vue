@@ -36,3 +36,19 @@ export type {
   SettledTransactionListParams,
   SettledTransactionListResult,
 } from './settledTransaction';
+export type {
+  TransactionImportCategory,
+  TransactionImportConfirmPayload,
+  TransactionImportConfirmResult,
+  TransactionImportConfirmRow,
+  TransactionImportEvent,
+  TransactionImportEventStage,
+  TransactionImportEventStatus,
+  TransactionImportPreviewData,
+  TransactionImportPreviewForm,
+  TransactionImportPreviewPayload,
+  TransactionImportPreviewResponseApi,
+  TransactionImportPreviewResult,
+  TransactionImportPreviewRow,
+  TransactionImportTag,
+} from './import';
