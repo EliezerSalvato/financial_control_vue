@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { Pagination } from '@/types/api';
 import type { Category } from '@/types/category';
+import { useAppLocale } from '@/composables/useAppLocale';
 import { useI18n } from 'vue-i18n';
 import { useNotificationStore } from '@/stores/notification';
 import { booleanFilterValue, parseActiveQuery, queryString, useIndexListQuery } from '@/composables/useIndexListQuery';
-import { deleteCategory, listCategories } from '@/api/categories';
+import { createMissingCategories, deleteCategory, listCategories } from '@/api/categories';
+import { DEFAULT_CATEGORIES } from '@/utils/defaultCategories';
 import { formatCurrency } from '@/utils/money';
 import { notifyApiError } from '@/utils/notifyApiError';
 import { computed, reactive, ref } from 'vue';
@@ -16,8 +18,10 @@ type SortField = 'name' | 'active';
 
 const { t, locale } = useI18n();
 const notificationStore = useNotificationStore();
+const { appLocale } = useAppLocale();
 
 const items = ref<Category[]>([]);
+const creatingDefaults = ref(false);
 const pagination = ref<Pagination | null>(null);
 
 const filters = reactive({
@@ -68,6 +72,19 @@ const { showLoading, showTableLoading, sortDirection, toggleSort, changePage, fi
 
 const filterNameChange = createDebouncedFilter();
 
+async function createDefaultCategories() {
+  try {
+    creatingDefaults.value = true;
+    const createdCount = await createMissingCategories(DEFAULT_CATEGORIES[appLocale.value]);
+    await changePage(1);
+    notificationStore.setCurrentMessage(t('categories.createDefaults.success', { count: createdCount }, createdCount), 'success');
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    creatingDefaults.value = false;
+  }
+}
+
 async function deleteItem(itemId: string) {
   try {
     const response = await deleteCategory(itemId);
@@ -91,6 +108,21 @@ async function deleteItem(itemId: string) {
     @change:page="changePage"
     @delete:item="deleteItem"
   >
+    <template #header-actions>
+      <button
+        type="button"
+        class="button is-info"
+        :class="{ 'is-loading': creatingDefaults }"
+        :disabled="creatingDefaults"
+        :title="t('categories.createDefaults.button')"
+        :aria-label="t('categories.createDefaults.button')"
+        @click="createDefaultCategories"
+      >
+        <i class="fas fa-magic" aria-hidden="true"></i>
+        <b class="is-hidden-touch">{{ t('categories.createDefaults.button') }}</b>
+      </button>
+    </template>
+
     <template #table-filters>
       <td class="color"></td>
       <td>
@@ -148,6 +180,10 @@ async function deleteItem(itemId: string) {
   </IndexPanel>
 </template>
 <style scoped>
+.button b {
+  margin-left: 5px;
+}
+
 .active {
   min-width: 175px;
 }

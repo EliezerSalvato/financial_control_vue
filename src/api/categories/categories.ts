@@ -62,3 +62,33 @@ export async function updateCategoryGoal(categoryId: string | number, payload: C
 
   return categoryUpdateFromApi(response);
 }
+
+function normalizeCategoryName(name: string): string {
+  return name.trim().toLocaleLowerCase();
+}
+
+async function listAllCategoryNames(): Promise<Set<string>> {
+  const names = new Set<string>();
+  let page: number | null = 1;
+
+  while (page) {
+    const result = await listCategories({ page, perPage: 100 });
+
+    result.categories.forEach((category) => names.add(normalizeCategoryName(category.name)));
+    page = result.pagination.nextPage;
+  }
+
+  return names;
+}
+
+// Skips categories whose name already exists (case-insensitive); returns how many were created.
+export async function createMissingCategories(categories: readonly { name: string; color: string }[]): Promise<number> {
+  const existingNames = await listAllCategoryNames();
+  const missing = categories.filter((category) => !existingNames.has(normalizeCategoryName(category.name)));
+
+  for (const category of missing) {
+    await createCategory({ category: { name: category.name, color: category.color, active: true } });
+  }
+
+  return missing.length;
+}

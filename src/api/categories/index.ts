@@ -1,1 +1,9 @@
-export { listCategories, deleteCategory, getCategory, createCategory, updateCategory, updateCategoryGoal } from './categories';
+export {
+  listCategories,
+  deleteCategory,
+  getCategory,
+  createCategory,
+  updateCategory,
+  updateCategoryGoal,
+  createMissingCategories,
+} from './categories';
