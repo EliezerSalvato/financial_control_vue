@@ -30,6 +30,7 @@ export default {
     account: 'account',
     category: 'category',
     credit_card: 'credit card',
+    import_rule: 'import rule',
     institution: 'institution',
     tag: 'tag',
     transaction: 'transaction',

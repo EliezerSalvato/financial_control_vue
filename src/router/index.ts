@@ -7,6 +7,7 @@ import accountsRoutes from '@/router/accounts';
 import categoriesRoutes from '@/router/categories';
 import creditCardsRoutes from '@/router/credit_cards';
 import goalsRoutes from '@/router/goals';
+import importRulesRoutes from '@/router/import_rules';
 import institutionsRoutes from '@/router/institutions';
 import notificationsRoutes from '@/router/notifications';
 import tagsRoutes from '@/router/tags';
@@ -26,6 +27,7 @@ const router = createRouter({
     ...creditCardsRoutes,
     ...goalsRoutes,
     ...accountsRoutes,
+    ...importRulesRoutes,
     ...institutionsRoutes,
     ...categoriesRoutes,
     ...tagsRoutes,

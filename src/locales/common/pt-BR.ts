@@ -30,6 +30,7 @@ export default {
     account: 'conta',
     category: 'categoria',
     credit_card: 'cartão de crédito',
+    import_rule: 'regra de importação',
     institution: 'instituição',
     tag: 'tag',
     transaction: 'transação',

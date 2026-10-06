@@ -14,6 +14,8 @@ import institutionsEn from './institutions/en';
 import institutionsPtBr from './institutions/pt-BR';
 import creditCardsEn from './creditCards/en';
 import creditCardsPtBr from './creditCards/pt-BR';
+import importRulesEn from './importRules/en';
+import importRulesPtBr from './importRules/pt-BR';
 import transactionsEn from './transactions/en';
 import transactionsPtBr from './transactions/pt-BR';
 import monthlyStatementsEn from './monthlyStatements/en';
@@ -41,6 +43,7 @@ const i18n = createI18n({
       tags: tagsEn,
       institutions: institutionsEn,
       creditCards: creditCardsEn,
+      importRules: importRulesEn,
       transactions: transactionsEn,
       monthlyStatements: monthlyStatementsEn,
       goals: goalsEn,
@@ -59,6 +62,7 @@ const i18n = createI18n({
       tags: tagsPtBr,
       institutions: institutionsPtBr,
       creditCards: creditCardsPtBr,
+      importRules: importRulesPtBr,
       transactions: transactionsPtBr,
       monthlyStatements: monthlyStatementsPtBr,
       goals: goalsPtBr,
