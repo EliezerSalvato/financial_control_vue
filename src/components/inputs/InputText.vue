@@ -12,6 +12,7 @@ const props = withDefaults(
     errors: string[];
     placeholder?: string;
     required?: boolean;
+    disabled?: boolean;
     maxlength?: number;
     type?: 'text' | 'email' | 'password';
     autocomplete?: string;
@@ -58,6 +59,7 @@ defineExpose({ focus });
         :maxlength="maxlength"
         :placeholder="placeholder"
         :autocomplete="autocomplete"
+        :disabled="disabled"
         :class="errors.length > 0 ? 'is-danger' : 'is-primary'"
         @input="updateValue"
       />

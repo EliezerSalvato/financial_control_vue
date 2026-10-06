@@ -22,11 +22,13 @@ const props = withDefaults(
     placeholder?: string;
     items?: ColorOption[];
     required?: boolean;
+    clearable?: boolean;
     disabled?: boolean | string | null;
   }>(),
   {
     items: () => [],
     required: false,
+    clearable: false,
     disabled: null,
   },
 );
@@ -64,6 +66,12 @@ function select(item: ColorOption) {
   emit('change:selected', { name: props.name, value: item.key });
 }
 
+function clear() {
+  model.value = '';
+  isOpen.value = false;
+  emit('change:selected', { name: props.name, value: '' });
+}
+
 function currentItemIndex() {
   return props.items.findIndex((item) => item.key === model.value);
 }
@@ -79,7 +87,8 @@ async function jumpToItem(index: number) {
   await nextTick();
 
   const options = menu.value?.querySelectorAll<HTMLElement>('[role="option"]');
-  options?.[index]?.scrollIntoView({ block: 'nearest' });
+  // +1 skips the clear option
+  options?.[index + (props.clearable ? 1 : 0)]?.scrollIntoView({ block: 'nearest' });
 }
 
 function onKeydown(event: KeyboardEvent) {
@@ -159,6 +168,11 @@ defineExpose({ focus });
 
         <Teleport to="body">
           <ul v-if="isOpen" ref="menu" class="option-select-menu" :style="menuStyle" role="listbox">
+            <li v-if="clearable" role="option" :aria-selected="!model">
+              <button type="button" class="option-select-option" :class="{ 'is-selected': !model }" @click="clear">
+                <span class="option-select-placeholder">{{ placeholder }}</span>
+              </button>
+            </li>
             <li v-for="item in items" :key="item.key" role="option" :aria-selected="item.key === model">
               <button type="button" class="option-select-option" :class="{ 'is-selected': item.key === model }" @click="select(item)">
                 <span v-if="item.color" class="option-select-swatch" :title="item.color" :style="{ backgroundColor: item.color }"></span>
