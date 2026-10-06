@@ -10,7 +10,7 @@ export PATH="$HOME/.asdf/shims:/opt/homebrew/bin:/usr/local/bin:$PATH"
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)" || exit 0
 cd "$root" || exit 0
 
-file="$(jq -r '.file_path // empty')"
+file="$(jq -r '.file_path // .tool_input.file_path // empty')"
 
 if [ -z "$file" ]; then
   exit 0

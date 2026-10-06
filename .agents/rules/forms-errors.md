@@ -1,9 +1,3 @@
----
-description: Formulários, validação, ApiError e notifications
-globs: src/pages/**/*.vue,src/utils/errorsHandler.ts,src/utils/validators/**
-alwaysApply: false
----
-
 # Forms, validation & errors
 
 Use `@/utils/errorsHandler`:

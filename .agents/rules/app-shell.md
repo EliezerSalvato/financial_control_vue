@@ -1,9 +1,3 @@
----
-description: Router, Pinia stores e i18n (rotas, sessão, locales)
-globs: src/router/**/*.ts,src/stores/**/*.ts,src/locales/**/*.ts
-alwaysApply: false
----
-
 # App shell (router / stores / i18n)
 
 ## Routing (`src/router/`)

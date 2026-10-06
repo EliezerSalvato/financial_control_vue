@@ -1,9 +1,3 @@
----
-description: API, transformers e types — HTTP isolado, *Api vs domain
-globs: src/api/**/*.ts,src/transformers/**/*.ts,src/types/**/*.ts
-alwaysApply: false
----
-
 # Data layer (api / transformers / types)
 
 Base URL: `import.meta.env.VITE_API_BASE_URL` in `@/api/client`.
@@ -30,12 +24,12 @@ Convert API ↔ domain. Named helpers: `tagFromResource`, `tagCollectionFromApi`
 
 ## Types (`src/types/`)
 
-| Kind | Example |
-| --- | --- |
-| Domain | `Tag`, `User` |
-| API wire | `TagAttributesApi`, `TagCollectionResponseApi` |
-| Form | `TagForm` |
-| Request | `TagCreatePayload` |
-| UI result | `TagListResult` |
+| Kind      | Example                                        |
+| --------- | ---------------------------------------------- |
+| Domain    | `Tag`, `User`                                  |
+| API wire  | `TagAttributesApi`, `TagCollectionResponseApi` |
+| Form      | `TagForm`                                      |
+| Request   | `TagCreatePayload`                             |
+| UI result | `TagListResult`                                |
 
 No `I` prefix. Avoid `any`; prefer `unknown`, generics, explicit types. Domain camelCase; API shapes use `*Api` when they differ.

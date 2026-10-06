@@ -1,9 +1,3 @@
----
-description: README conventions
-globs: README.md
-alwaysApply: false
----
-
 When creating or updating README.md:
 
 Follow this exact structure:
@@ -20,6 +14,7 @@ Follow this exact structure:
 10. Troubleshooting
 
 Rules:
+
 - Keep sections concise
 - Use markdown tables for env vars
 - Include copy-pasteable commands

@@ -1,16 +1,10 @@
----
-description: Ordem de imports, formatação e estilo de código
-globs: src/**/*.{ts,vue}
-alwaysApply: false
----
-
 # Code style
 
 - Early returns; small functions; descriptive names.
-- Comments explain *why*, never *what*.
+- Comments explain _why_, never _what_.
 - Prefer absolute imports (`@/...`).
 
-Formatting: `afterFileEdit` hook in `.cursor/hooks.json`. Do not hand-tune. Fallback: `pnpm lint && pnpm format`. Typecheck: `pnpm type-check`.
+Formatting: `afterFileEdit` hook in `.agents/hooks/hooks.json`. Do not hand-tune. Fallback: `pnpm lint && pnpm format`. Typecheck: `pnpm type-check`.
 
 ## Import order (manual)
 

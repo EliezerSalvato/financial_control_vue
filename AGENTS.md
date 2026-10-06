@@ -4,7 +4,44 @@ You are a senior Vue.js developer working on this app.
 
 Always follow the existing architecture and coding patterns before introducing new ones. Prefer Vue built-ins and project utilities over new dependencies.
 
-Detailed conventions live in `.cursor/rules/` (loaded by file glob). Keep this file as the always-on map.
+# Mandatory Reading
+
+Before making code changes:
+
+1. Read this file (`AGENTS.md`)
+2. Read only files relevant to the requested feature
+3. Avoid loading unnecessary context
+4. Follow the matching rules in `.agents/rules/` (see [Project rules](#project-rules))
+
+## Project rules
+
+This project is used with both Cursor and Claude Code. This file is the single source of instructions: Cursor reads it natively and `CLAUDE.md` only imports it (`@AGENTS.md`). Never add content to `CLAUDE.md`, and do not create `.cursor/rules/` or `.claude/rules/`.
+
+Detailed rules live **only** in `.agents/rules/` as plain Markdown. Before working on a matching task, read the rule file:
+
+| Rule | Read when |
+|------|-----------|
+| [`.agents/rules/app-shell.md`](.agents/rules/app-shell.md) | Editing router, Pinia stores or i18n (`src/router/**/*.ts`, `src/stores/**/*.ts`, `src/locales/**/*.ts`) |
+| [`.agents/rules/code-style.md`](.agents/rules/code-style.md) | Editing any `src/**/*.{ts,vue}` (imports, formatting, style) |
+| [`.agents/rules/commit-patterns.md`](.agents/rules/commit-patterns.md) | Creating or suggesting a git commit |
+| [`.agents/rules/data-layer.md`](.agents/rules/data-layer.md) | Editing API, transformers or types (`src/api/**/*.ts`, `src/transformers/**/*.ts`, `src/types/**/*.ts`) |
+| [`.agents/rules/forms-errors.md`](.agents/rules/forms-errors.md) | Editing forms, validation or error handling (`src/pages/**/*.vue`, `src/utils/errorsHandler.ts`, `src/utils/validators/**`) |
+| [`.agents/rules/readme.md`](.agents/rules/readme.md) | Creating or updating `README.md` |
+| [`.agents/rules/vue-pages-components.md`](.agents/rules/vue-pages-components.md) | Editing pages or components (`src/pages/**/*.vue`, `src/components/**/*.vue`) |
+
+To add a rule, create `.agents/rules/<name>.md` (plain Markdown, no tool-specific frontmatter) and add a row to this table.
+
+## Hooks
+
+Hooks live in `.agents/hooks/`:
+
+- [`.agents/hooks/hooks.json`](.agents/hooks/hooks.json) — hook definitions (`afterFileEdit` runs `format.sh`)
+- [`.agents/hooks/format.sh`](.agents/hooks/format.sh) — runs ESLint `--fix` + Prettier on the edited file
+
+Each tool only reads hooks from its own location, so these files are thin pointers to `.agents/hooks/format.sh` — keep the logic in `.agents/hooks/` and do not duplicate it:
+
+- `.cursor/hooks.json` — Cursor `afterFileEdit`
+- `.claude/settings.json` — Claude Code `PostToolUse` (`Edit|Write`)
 
 ---
 

@@ -1,8 +1,3 @@
----
-description: Conventional Commits rules. Apply when creating or suggesting git commits.
-alwaysApply: false
----
-
 # Commit Rules
 
 When generating or suggesting commit messages, ALWAYS follow these rules.
@@ -25,19 +20,19 @@ Do not commit automatically after finishing code changes. If the user did not re
 
 ## Allowed types
 
-| Type       | When to use                                                        |
-|------------|---------------------------------------------------------------------|
-| `feat`     | New functionality for the user                                      |
-| `fix`      | Bug fix                                                             |
-| `docs`     | Documentation-only changes                                          |
-| `style`    | Formatting, spaces, semicolons — no logic change                    |
-| `refactor` | Code refactoring without changing external behavior                 |
-| `perf`     | Performance improvement                                             |
-| `test`     | Test addition or correction                                         |
-| `build`    | Changes affecting build or external dependencies                    |
-| `ci`       | Changes to CI files and scripts                                     |
-| `chore`    | General maintenance, configs, tasks that don't change src or test   |
-| `revert`   | Reverts a previous commit                                           |
+| Type       | When to use                                                       |
+| ---------- | ----------------------------------------------------------------- |
+| `feat`     | New functionality for the user                                    |
+| `fix`      | Bug fix                                                           |
+| `docs`     | Documentation-only changes                                        |
+| `style`    | Formatting, spaces, semicolons — no logic change                  |
+| `refactor` | Code refactoring without changing external behavior               |
+| `perf`     | Performance improvement                                           |
+| `test`     | Test addition or correction                                       |
+| `build`    | Changes affecting build or external dependencies                  |
+| `ci`       | Changes to CI files and scripts                                   |
+| `chore`    | General maintenance, configs, tasks that don't change src or test |
+| `revert`   | Reverts a previous commit                                         |
 
 ## Writing rules
 
@@ -48,11 +43,13 @@ Do not commit automatically after finishing code changes. If the user did not re
 5. **Scope in parentheses** when it makes sense to indicate the affected module/area: `feat(auth):`, `fix(user):`.
 6. **Body explains the why**, doesn't repeat the diff. Use when the change is not trivial.
 7. **Breaking changes** must be marked with `!` after the type/scope and detailed in the footer:
+
    ```
    feat(api)!: remove support for /v1/users endpoint
 
    BREAKING CHANGE: the /v1/users endpoint was removed, use /v2/users
    ```
+
 8. **Reference issues** in the footer when applicable: `Closes #42`, `Refs #17`.
 
 ## Granularity best practices

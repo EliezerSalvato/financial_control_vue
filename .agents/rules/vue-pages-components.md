@@ -1,9 +1,3 @@
----
-description: Convenções Vue para pages e components (Composition API, shells, loading)
-globs: src/pages/**/*.vue,src/components/**/*.vue
-alwaysApply: false
----
-
 # Vue pages & components
 
 - Always Composition API + `<script setup lang="ts">` + TypeScript.
@@ -55,4 +49,4 @@ List pages may use `showLoading` / `showTableLoading` (see `pages/tags/Index.vue
 
 ## Composables
 
-No `composables/` folder yet. When extracting reusable non-UI logic, use `src/composables/useSomething.ts` (same spirit as stores/utils).
+When extracting reusable non-UI logic, use `src/composables/useSomething.ts` (e.g. `useFormErrors`, `useIndexListQuery`).
