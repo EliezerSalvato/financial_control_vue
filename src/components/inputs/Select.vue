@@ -34,7 +34,7 @@ const root = useTemplateRef<HTMLElement>('root');
 const trigger = useTemplateRef<HTMLButtonElement>('trigger');
 const menu = useTemplateRef<HTMLElement>('menu');
 const isOpen = ref(false);
-const { opensUp } = useDropdownPlacement(isOpen, trigger, menu);
+const { menuStyle } = useDropdownPlacement(isOpen, trigger, menu);
 const { findIndex, clearQuery } = useSelectTypeahead();
 
 const normalizedItems = computed<SelectItem[]>(() => {
@@ -111,7 +111,9 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 function onDocumentClick(event: MouseEvent) {
-  if (!root.value?.contains(event.target as Node)) {
+  const target = event.target as Node;
+
+  if (!root.value?.contains(target) && !menu.value?.contains(target)) {
     isOpen.value = false;
   }
 }
@@ -154,24 +156,26 @@ defineExpose({ focus });
         </span>
       </button>
 
-      <ul v-show="isOpen" ref="menu" class="custom-select-menu" :class="{ 'is-up': opensUp }" role="listbox">
-        <li role="option" :aria-selected="!hasValue">
-          <button type="button" class="custom-select-option" :class="{ 'is-selected': !hasValue }" @click="select('')">
-            <span class="custom-select-placeholder">{{ placeholder }}</span>
-          </button>
-        </li>
-        <li v-for="item in normalizedItems" :key="item.id" role="option" :aria-selected="String(item.id) === String(model ?? '')">
-          <button
-            type="button"
-            class="custom-select-option"
-            :class="{ 'is-selected': String(item.id) === String(model ?? '') }"
-            :title="item.description"
-            @click="select(item.id)"
-          >
-            <span>{{ item.description }}</span>
-          </button>
-        </li>
-      </ul>
+      <Teleport to="body">
+        <ul v-if="isOpen" ref="menu" class="custom-select-menu" :style="menuStyle" role="listbox">
+          <li role="option" :aria-selected="!hasValue">
+            <button type="button" class="custom-select-option" :class="{ 'is-selected': !hasValue }" @click="select('')">
+              <span class="custom-select-placeholder">{{ placeholder }}</span>
+            </button>
+          </li>
+          <li v-for="item in normalizedItems" :key="item.id" role="option" :aria-selected="String(item.id) === String(model ?? '')">
+            <button
+              type="button"
+              class="custom-select-option"
+              :class="{ 'is-selected': String(item.id) === String(model ?? '') }"
+              :title="item.description"
+              @click="select(item.id)"
+            >
+              <span>{{ item.description }}</span>
+            </button>
+          </li>
+        </ul>
+      </Teleport>
     </div>
 
     <p class="help is-danger">{{ error }}</p>
@@ -224,15 +228,8 @@ defineExpose({ focus });
 }
 
 .custom-select-menu {
-  position: absolute;
-  z-index: 20;
-  top: 100%;
-  left: 0;
-  right: auto;
-  width: max-content;
-  min-width: 100%;
+  z-index: 50;
   max-height: 16rem;
-  margin: 0.15rem 0 0;
   padding: 0.35rem 0;
   overflow-y: auto;
   list-style: none;
@@ -240,12 +237,6 @@ defineExpose({ focus });
   border: 1px solid #dbdbdb;
   border-radius: 4px;
   box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1);
-}
-
-.custom-select-menu.is-up {
-  top: auto;
-  bottom: 100%;
-  margin: 0 0 0.15rem;
 }
 
 .custom-select-option {
