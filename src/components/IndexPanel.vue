@@ -303,6 +303,7 @@ onUnmounted(() => {
         <p class="panel-heading">
           <span class="panel-heading-title">{{ pluralizedTitle }}</span>
           <span class="panel-heading-aside">
+            <slot name="header-actions" />
             <ButtonNew :name="t(`buttons.new.${btnNewGender}`, { name: t(`models.${modelName}`) })" :route="`/${pluralizedName}/new`" />
           </span>
         </p>
@@ -386,6 +387,9 @@ onUnmounted(() => {
 }
 
 .panel-heading-aside {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   flex-shrink: 0;
 }
 
