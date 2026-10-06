@@ -26,6 +26,10 @@ export default {
     startsOn: 'Starting from',
     changeForNextMonths: 'Change value for next months',
   },
+  createDefaults: {
+    button: 'Add common tags',
+    success: 'No new tags added (all already exist) | 1 tag added | {count} tags added',
+  },
   errors: {
     endsOnBeforeStartsOn: 'must be on or after the start month',
     endsOnExistingGoalMonth: 'must be after a month that already has a goal',

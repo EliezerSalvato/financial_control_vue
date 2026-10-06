@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { Pagination } from '@/types/api';
 import type { Tag } from '@/types/tag';
+import { useAppLocale } from '@/composables/useAppLocale';
 import { useI18n } from 'vue-i18n';
 import { useNotificationStore } from '@/stores/notification';
 import { booleanFilterValue, parseActiveQuery, queryString, useIndexListQuery } from '@/composables/useIndexListQuery';
-import { deleteTag, listTags } from '@/api/tags';
+import { createMissingTags, deleteTag, listTags } from '@/api/tags';
+import { DEFAULT_TAGS } from '@/utils/defaultTags';
 import { formatCurrency } from '@/utils/money';
 import { notifyApiError } from '@/utils/notifyApiError';
 import { computed, reactive, ref } from 'vue';
@@ -16,8 +18,10 @@ type SortField = 'name' | 'active';
 
 const { t, locale } = useI18n();
 const notificationStore = useNotificationStore();
+const { appLocale } = useAppLocale();
 
 const items = ref<Tag[]>([]);
+const creatingDefaults = ref(false);
 const pagination = ref<Pagination | null>(null);
 
 const filters = reactive({
@@ -76,6 +80,19 @@ function deleteConfirm(item: Tag) {
   };
 }
 
+async function createDefaultTags() {
+  try {
+    creatingDefaults.value = true;
+    const createdCount = await createMissingTags(DEFAULT_TAGS[appLocale.value]);
+    await changePage(1);
+    notificationStore.setCurrentMessage(t('tags.createDefaults.success', { count: createdCount }, createdCount), 'success');
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    creatingDefaults.value = false;
+  }
+}
+
 async function deleteItem(itemId: string) {
   try {
     const response = await deleteTag(itemId);
@@ -100,6 +117,21 @@ async function deleteItem(itemId: string) {
     @change:page="changePage"
     @delete:item="deleteItem"
   >
+    <template #header-actions>
+      <button
+        type="button"
+        class="button is-info"
+        :class="{ 'is-loading': creatingDefaults }"
+        :disabled="creatingDefaults"
+        :title="t('tags.createDefaults.button')"
+        :aria-label="t('tags.createDefaults.button')"
+        @click="createDefaultTags"
+      >
+        <i class="fas fa-magic" aria-hidden="true"></i>
+        <b class="is-hidden-touch">{{ t('tags.createDefaults.button') }}</b>
+      </button>
+    </template>
+
     <template #table-filters>
       <td class="color"></td>
       <td>
@@ -157,6 +189,10 @@ async function deleteItem(itemId: string) {
   </IndexPanel>
 </template>
 <style scoped>
+.button b {
+  margin-left: 5px;
+}
+
 .active {
   min-width: 175px;
 }

@@ -62,3 +62,33 @@ export async function updateTagGoal(tagId: string | number, payload: TagGoalUpda
 
   return tagUpdateFromApi(response);
 }
+
+function normalizeTagName(name: string): string {
+  return name.trim().toLocaleLowerCase();
+}
+
+async function listAllTagNames(): Promise<Set<string>> {
+  const names = new Set<string>();
+  let page: number | null = 1;
+
+  while (page) {
+    const result = await listTags({ page, perPage: 100 });
+
+    result.tags.forEach((tag) => names.add(normalizeTagName(tag.name)));
+    page = result.pagination.nextPage;
+  }
+
+  return names;
+}
+
+// Skips tags whose name already exists (case-insensitive); returns how many were created.
+export async function createMissingTags(tags: readonly { name: string; color: string }[]): Promise<number> {
+  const existingNames = await listAllTagNames();
+  const missing = tags.filter((tag) => !existingNames.has(normalizeTagName(tag.name)));
+
+  for (const tag of missing) {
+    await createTag({ tag: { name: tag.name, color: tag.color, active: true } });
+  }
+
+  return missing.length;
+}
