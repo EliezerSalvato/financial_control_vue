@@ -4,7 +4,7 @@ import { setupApp } from './support/setup';
 import { expect, test } from '@playwright/test';
 
 function panelTitle(page: Page) {
-  return page.locator('nav.panel .panel-heading-title');
+  return page.locator('nav.panel .panel-heading-title').last();
 }
 
 async function chooseOption(page: Page, triggerName: string, option: string) {
@@ -457,7 +457,7 @@ test.describe('transactions', () => {
       expect(utilities?.recurrences.at(-1)?.value).toBe(1600);
     });
 
-    test('validates a past start date when changing recurrence', async ({ page, baseURL }) => {
+    test('allows a past start date when changing recurrence', async ({ page, baseURL }) => {
       const { transactions } = await setupApp(page, baseURL);
       const initialCount = transactions.find('3')?.recurrences.length ?? 0;
 
@@ -470,9 +470,9 @@ test.describe('transactions', () => {
       await modal.locator('input[name="startsOn"]').fill('08/01/2026');
       await modal.getByRole('button', { name: 'Save' }).click();
 
-      await expect(modal.getByText('cannot be before the current month')).toBeVisible();
-      await expect(modal).toBeVisible();
-      expect(transactions.find('3')?.recurrences).toHaveLength(initialCount);
+      await expect(page.getByText('Transaction was successfully updated.')).toBeVisible();
+      await expect(page.locator('.modal.is-active')).toHaveCount(0);
+      expect(transactions.find('3')?.recurrences).toHaveLength(initialCount + 1);
     });
 
     test('validates that the new recurrence value must differ', async ({ page, baseURL }) => {

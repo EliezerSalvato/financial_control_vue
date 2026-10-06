@@ -4,7 +4,7 @@ import { setupApp } from './support/setup';
 import { expect, test } from '@playwright/test';
 
 function panelTitle(page: Page) {
-  return page.locator('nav.panel .panel-heading-title');
+  return page.locator('nav.panel .panel-heading-title').last();
 }
 
 test.describe('categories', () => {
@@ -193,7 +193,7 @@ test.describe('categories', () => {
       await page.getByRole('button', { name: 'Save' }).click();
 
       await expect(page.getByText('must be after a month that already has a goal')).toBeVisible();
-      await expect(page).toHaveURL(/\/categories\/1/);
+      await expect(page).toHaveURL(/\/categories\/edit\/1/);
       expect(categories.find('1')?.goalEndsOn).toBeNull();
     });
 

@@ -30,7 +30,7 @@ test.describe('goals', () => {
       await page.getByRole('link', { name: 'Goals', exact: true }).click();
 
       await expect(page).toHaveURL(new RegExp(`/goals\\?month=${current.month}&year=${current.year}`));
-      await expect(page.getByRole('button', { name: periodLabel(current) })).toBeVisible();
+      await expect(page.getByLabel('Current month and year')).toHaveText(periodLabel(current));
       await expect(page.locator('.month-status')).toContainText('Open');
       await expect(page.getByRole('button', { name: 'Change status to closed' })).toHaveCount(0);
       await expect(page.getByRole('button', { name: 'Process month' })).toHaveCount(0);
@@ -74,7 +74,7 @@ test.describe('goals', () => {
 
       await page.getByRole('button', { name: '‹ Prev' }).click();
       await expect(page).toHaveURL(new RegExp(`/goals\\?month=${previous.month}&year=${previous.year}`));
-      await expect(page.getByRole('button', { name: periodLabel(previous) })).toBeVisible();
+      await expect(page.getByLabel('Current month and year')).toHaveText(periodLabel(previous));
       await expect(page.locator('.month-status')).toContainText('Open');
       await expect(page.getByText('No categories with goals found.')).toBeVisible();
       await expect(page.getByText('No tags with goals found.')).toBeVisible();
