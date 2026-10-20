@@ -3,6 +3,7 @@ export default {
     signIn: 'Entrar',
     signUp: 'Cadastrar',
     forgotPassword: 'Esqueceu sua senha?',
+    resendConfirmation: 'Não recebeu as instruções de confirmação?',
   },
   registration: {
     title: 'Cadastrar',
@@ -19,6 +20,10 @@ export default {
   },
   forgotPassword: {
     title: 'Esqueceu sua senha?',
+    email: 'E-mail',
+  },
+  resendConfirmation: {
+    title: 'Reenviar instruções de confirmação',
     email: 'E-mail',
   },
   confirmEmail: {

@@ -11,6 +11,7 @@ const links = computed(() =>
     { name: 'signIn', label: t('user.links.signIn') },
     { name: 'signUp', label: t('user.links.signUp') },
     { name: 'forgotPassword', label: t('user.links.forgotPassword') },
+    { name: 'resendConfirmation', label: t('user.links.resendConfirmation') },
   ].filter((link) => link.name !== route.name),
 );
 </script>

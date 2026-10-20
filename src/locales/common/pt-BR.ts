@@ -24,6 +24,7 @@ export default {
     ok: 'OK',
     signUp: 'Cadastrar',
     sendResetPasswordInstructions: 'Enviar instruções de redefinição de senha',
+    sendConfirmationInstructions: 'Reenviar instruções de confirmação',
     changeMyPassword: 'Alterar minha senha',
   },
   models: {

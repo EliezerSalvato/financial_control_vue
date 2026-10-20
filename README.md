@@ -162,14 +162,15 @@ Protected routes use `meta.requiresAuth`. Guest-only routes use `meta.requiresGu
 
 ### Public / guest
 
-| Name             | Path                   | Auth   |
-| ---------------- | ---------------------- | ------ |
-| `signIn`         | `/users/sign-in`       | Guest  |
-| `signUp`         | `/users/sign-up`       | Guest  |
-| `forgotPassword` | `/users/password/new`  | Guest  |
-| `resetPassword`  | `/users/password/edit` | Guest  |
-| `confirmEmail`   | `/users/confirmation`  | Public |
-| `notFound`       | `/*`                   | Public |
+| Name                 | Path                      | Auth   |
+| -------------------- | ------------------------- | ------ |
+| `signIn`             | `/users/sign-in`          | Guest  |
+| `signUp`             | `/users/sign-up`          | Guest  |
+| `forgotPassword`     | `/users/password/new`     | Guest  |
+| `resetPassword`      | `/users/password/edit`    | Guest  |
+| `resendConfirmation` | `/users/confirmation/new` | Guest  |
+| `confirmEmail`       | `/users/confirmation`     | Public |
+| `notFound`           | `/*`                      | Public |
 
 ### Authenticated
 
@@ -194,7 +195,7 @@ The access token lives in Pinia memory (not `localStorage`). The API sets an enc
 Typical flow:
 
 1. Register — `/users/sign-up`
-2. Confirm email — `/users/confirmation` (token from the API email; inspect in Mailpit locally)
+2. Confirm email — `/users/confirmation` (token from the API email; inspect in Mailpit locally). Resend via `/users/confirmation/new` if the message did not arrive
 3. Sign in — `/users/sign-in` → Bearer `token` in memory; refresh cookie from the API
 4. Protected pages send `Authorization: Bearer <token>`
 5. On expiry, `apiRequest` refreshes via `PATCH /api/v1/user/session/refreshes` (cookie + `remember_me`)

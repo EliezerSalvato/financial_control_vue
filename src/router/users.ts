@@ -4,6 +4,7 @@ import ForgotPassword from '@/pages/user/ForgotPassword.vue';
 import Login from '@/pages/user/Login.vue';
 import Profile from '@/pages/user/profile/Form.vue';
 import Registration from '@/pages/user/Registration.vue';
+import ResendConfirmation from '@/pages/user/ResendConfirmation.vue';
 import ResetPassword from '@/pages/user/ResetPassword.vue';
 
 const usersRoutes: RouteRecordRaw[] = [
@@ -35,6 +36,12 @@ const usersRoutes: RouteRecordRaw[] = [
     path: '/users/password/edit',
     name: 'resetPassword',
     component: ResetPassword,
+    meta: { requiresGuest: true },
+  },
+  {
+    path: '/users/confirmation/new',
+    name: 'resendConfirmation',
+    component: ResendConfirmation,
     meta: { requiresGuest: true },
   },
   {

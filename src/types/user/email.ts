@@ -12,4 +12,10 @@ export type EmailConfirmationPayload = {
   token: string;
 };
 
+export type EmailConfirmationResendPayload = {
+  email: string;
+};
+
 export type EmailForm = EmailChangePayload;
+
+export type ResendConfirmationForm = EmailConfirmationResendPayload;

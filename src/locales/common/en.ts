@@ -24,6 +24,7 @@ export default {
     ok: 'OK',
     signUp: 'Sign up',
     sendResetPasswordInstructions: 'Send me reset password instructions',
+    sendConfirmationInstructions: 'Resend confirmation instructions',
     changeMyPassword: 'Change my password',
   },
   models: {

@@ -3,6 +3,7 @@ export default {
     signIn: 'Log in',
     signUp: 'Sign up',
     forgotPassword: 'Forgot your password?',
+    resendConfirmation: "Didn't receive confirmation instructions?",
   },
   registration: {
     title: 'Sign up',
@@ -19,6 +20,10 @@ export default {
   },
   forgotPassword: {
     title: 'Forgot your password?',
+    email: 'Email',
+  },
+  resendConfirmation: {
+    title: 'Resend confirmation instructions',
     email: 'Email',
   },
   confirmEmail: {
