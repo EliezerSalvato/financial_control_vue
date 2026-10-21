@@ -11,6 +11,7 @@ import {
   periodUrl,
   shiftPeriod,
 } from './support/monthly_statements';
+import { defaultAccounts } from './support/accounts';
 import { LAST_PROCESSED_AT, PROCESS_MONTH_MESSAGE } from './support/settlements';
 import { setupApp } from './support/setup';
 import { expect, test } from '@playwright/test';
@@ -192,7 +193,44 @@ test.describe('monthly statements', () => {
       await expect(expenses.getByText(formatMoney(45.9))).toBeVisible();
       await expect(expenses.getByText(formatMoney(131.4))).toBeVisible();
 
-      await expect(page.locator('.balance')).toContainText(formatMoney(4868.6));
+      const balance = page.locator('.balance');
+      await expect(balance).toContainText(formatMoney(4868.6));
+      await expect(balance.getByText('Total balance in accounts')).toHaveCount(0);
+
+      await balance.getByRole('button', { name: 'Show account balances' }).click();
+
+      const accountsTotal = 1500.5 + 800 + 50;
+      await expect(balance.getByText('Total balance in accounts')).toBeVisible();
+      await expect(balance).toContainText(formatMoney(accountsTotal));
+      await expect(balance.getByText('Final balance')).toBeVisible();
+      await expect(balance).toContainText(formatMoney(accountsTotal + 4868.6));
+
+      await balance.getByRole('button', { name: 'Hide account balances' }).click();
+      await expect(balance.getByText('Final balance')).toHaveCount(0);
+    });
+
+    test('adjusts the final balance by the signed month balance', async ({ page, baseURL }) => {
+      const statements = defaultMonthlyStatements();
+
+      await setupApp(page, baseURL, {
+        accounts: [
+          { ...defaultAccounts[0], currentBalance: 1000 },
+          { ...defaultAccounts[1], currentBalance: -200 },
+        ],
+        monthlyStatements: [
+          { ...statements[0], value: 100 },
+          { ...statements[1], value: 250 },
+        ],
+        monthlyStatementTransfers: [],
+      });
+
+      await page.goto(periodUrl(currentAppPeriod()));
+      await page.getByRole('button', { name: 'Show account balances' }).click();
+
+      const balance = page.locator('.balance');
+      await expect(balance.getByText(formatMoney(-150), { exact: true })).toHaveClass(/has-text-danger/);
+      await expect(balance.getByText(formatMoney(800), { exact: true })).toBeVisible();
+      await expect(balance.getByText(formatMoney(650), { exact: true })).toHaveClass(/has-text-success/);
     });
 
     test('shows empty states', async ({ page, baseURL }) => {

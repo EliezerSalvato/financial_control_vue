@@ -4,6 +4,7 @@ import type { MonthlyStatement } from '@/types/monthly_statement';
 import type { SettledTransaction } from '@/types/transaction';
 import type { LocationQuery } from 'vue-router';
 import type { MonthlyStatus, MonthlyStatusKind, MonthlyStatusProcessingUpdate } from '@/types/monthly_status';
+import { listAccounts } from '@/api/accounts';
 import { ApiError } from '@/api/client';
 import { listInvoiceSettlements } from '@/api/credit_cards';
 import { listMonthlyStatements } from '@/api/monthly_statements';
@@ -18,7 +19,7 @@ import { getMonthlyStatus, updateMonthlyStatus } from '@/api/monthly_statuses';
 import { appQueryToRoute, routeQueryToApp } from '@/utils/routeQuery';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref, watch } from 'vue';
-import { formatCurrency } from '@/utils/money';
+import { formatCurrency, signedAmountClass } from '@/utils/money';
 import { notifyApiError } from '@/utils/notifyApiError';
 import { formatFrontDateTime, getTodayIsoDate, getZonedDateParts } from '@/locales/locale';
 import Loading from '@/components/Loading.vue';
@@ -73,13 +74,16 @@ const expenses = computed(() => items.value.filter((item) => item.kind === 'expe
 const totalIncome = computed(() => incomes.value.reduce((sum, item) => sum + item.value, 0));
 const totalExpense = computed(() => expenses.value.reduce((sum, item) => sum + item.value, 0));
 const balance = computed(() => totalIncome.value - totalExpense.value);
-const balanceClass = computed(() => {
-  if (balance.value > 0) return 'has-text-success';
-
-  if (balance.value < 0) return 'has-text-danger';
-
-  return undefined;
-});
+const accountsBalanceExpanded = ref(false);
+const accountsBalanceLoading = ref(false);
+const accountsBalanceLoaded = ref(false);
+const accountsTotal = ref(0);
+let accountsRequestId = 0;
+// Month balance is signed, so a surplus is added to the accounts total and a deficit is subtracted.
+const finalBalance = computed(() => accountsTotal.value + balance.value);
+const accountsBalanceToggleLabel = computed(() =>
+  accountsBalanceExpanded.value ? t('monthlyStatements.collapseAccountsBalance') : t('monthlyStatements.expandAccountsBalance'),
+);
 const isMonthOpen = computed(() => monthStatus.value === 'open');
 const isFuturePeriod = computed(() => {
   const current = defaultPeriod();
@@ -148,6 +152,50 @@ function goToPeriod(period: { month: number; year: number }) {
 
 function formatValue(value: number) {
   return formatCurrency(value, appLocale.value);
+}
+
+async function sumAccountBalances() {
+  let page: number | null = 1;
+  let total = 0;
+
+  while (page) {
+    const result = await listAccounts({ page, perPage: 100 });
+
+    total += result.accounts.reduce((sum, account) => sum + account.currentBalance, 0);
+    page = result.pagination.nextPage;
+  }
+
+  return total;
+}
+
+async function loadAccountsTotal() {
+  const currentRequest = ++accountsRequestId;
+  accountsBalanceLoading.value = true;
+
+  try {
+    const total = await sumAccountBalances();
+
+    if (currentRequest !== accountsRequestId) return;
+
+    accountsTotal.value = total;
+    accountsBalanceLoaded.value = true;
+  } catch (error) {
+    if (currentRequest !== accountsRequestId) return;
+
+    notifyApiError(error);
+  } finally {
+    if (currentRequest === accountsRequestId) {
+      accountsBalanceLoading.value = false;
+    }
+  }
+}
+
+function toggleAccountsBalance() {
+  accountsBalanceExpanded.value = !accountsBalanceExpanded.value;
+
+  if (accountsBalanceExpanded.value) {
+    void loadAccountsTotal();
+  }
 }
 
 function periodCacheKey(periodMonth: number, periodYear: number) {
@@ -426,6 +474,15 @@ async function processMonth() {
   }
 }
 
+watch(statementsReloadKey, () => {
+  if (!accountsBalanceExpanded.value) {
+    accountsBalanceLoaded.value = false;
+    return;
+  }
+
+  void loadAccountsTotal();
+});
+
 watch(
   () => route.query,
   async () => {
@@ -483,8 +540,28 @@ watch(
       />
 
       <div class="box balance">
-        <b>{{ t('monthlyStatements.balance') }}:</b>
-        <span :class="balanceClass">{{ formatValue(balance) }}</span>
+        <div class="balance-summary">
+          <div class="balance-lines">
+            <b>{{ t('monthlyStatements.balance') }}:</b>
+            <span :class="signedAmountClass(balance)">{{ formatValue(balance) }}</span>
+            <template v-if="accountsBalanceExpanded && accountsBalanceLoaded">
+              <b>{{ t('monthlyStatements.accountsBalance') }}:</b>
+              <span :class="signedAmountClass(accountsTotal)">{{ formatValue(accountsTotal) }}</span>
+              <b>{{ t('monthlyStatements.finalBalance') }}:</b>
+              <span :class="signedAmountClass(finalBalance)">{{ formatValue(finalBalance) }}</span>
+            </template>
+            <Loading v-else-if="accountsBalanceExpanded && accountsBalanceLoading" />
+          </div>
+          <button
+            type="button"
+            class="expand"
+            :aria-expanded="accountsBalanceExpanded"
+            :aria-label="accountsBalanceToggleLabel"
+            @click="toggleAccountsBalance"
+          >
+            <i class="fas" :class="accountsBalanceExpanded ? 'fa-chevron-up' : 'fa-chevron-down'" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
 
       <TransfersPanel
@@ -589,17 +666,65 @@ watch(
 .balance {
   grid-area: balance;
   margin-bottom: 1.5rem;
-  text-align: center;
-  padding: 5px;
+  padding: 5px 10px;
+}
+
+.balance-summary {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-inline: 30px;
+}
+
+.balance-lines {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-items: end;
+  column-gap: 10px;
+  row-gap: 4px;
+  align-items: baseline;
+}
+
+.balance-lines > b,
+.balance-lines > span {
+  white-space: nowrap;
+}
+
+.balance-lines > span {
+  text-align: right;
+}
+
+.expand {
+  position: absolute;
+  top: 0.15rem;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #3273dc;
+  color: white;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.expand i {
+  font-size: 0.65rem;
+  -webkit-text-stroke: 0.7px currentColor;
+}
+
+.balance-lines :deep(.loading) {
+  grid-column: 1 / -1;
+  margin: 0;
+  width: 90px;
 }
 
 .transfers-panel {
   grid-area: transfers;
   margin-bottom: 10px;
-}
-
-.balance b {
-  margin-right: 10px;
 }
 
 @media (max-width: 1023px) {
