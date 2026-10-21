@@ -90,11 +90,15 @@ export class TransactionImportsApi {
       fileName: multipartFileName(body),
     });
 
+    const messages = this.previewRows.map((row) => this.previewEvent(row, this.previewRequests.at(-1)));
+
+    // Send the rows before the HTTP response. That is the order that skips the review page
+    // when navigation only watches the "finished" flag.
+    this.emit(messages);
+
     await fulfillJson(route, { status: 'success', data: { import_id: IMPORT_ID, total_rows: this.previewRows.length } });
 
-    const request = this.previewRequests.at(-1);
-
-    this.broadcast(this.previewRows.map((row) => this.previewEvent(row, request)));
+    this.rebroadcast(messages);
   }
 
   private previewEvent(row: ImportPreviewRowRecord, request: ImportPreviewRequest | undefined) {
@@ -140,27 +144,30 @@ export class TransactionImportsApi {
 
     await fulfillJson(route, { status: 'success', data: { import_id: payload.import_id, total_rows: payload.rows.length } });
 
-    this.broadcast(
-      payload.rows.map((row) => ({
-        import_id: payload.import_id,
-        stage: 'import',
-        row: row.row,
-        status: row.create ? 'created' : 'ignored',
-        transaction_id: row.create ? String(100 + row.row) : undefined,
-      })),
-    );
+    const messages = payload.rows.map((row) => ({
+      import_id: payload.import_id,
+      stage: 'import',
+      row: row.row,
+      status: row.create ? 'created' : 'ignored',
+      transaction_id: row.create ? String(100 + row.row) : undefined,
+    }));
+
+    this.emit(messages);
+    this.rebroadcast(messages);
+  }
+
+  private emit(messages: unknown[]) {
+    try {
+      messages.forEach((message) => this.cable.sendToChannel({ channel: 'TransactionImportChannel' }, message));
+    } catch {
+      // the page was closed before the event was delivered
+    }
   }
 
   // The page may still be connecting its websocket when the request is answered, so events are re-sent; the app keys them by row.
-  private broadcast(messages: unknown[]) {
-    for (const delay of [0, 300, 1000]) {
-      setTimeout(() => {
-        try {
-          messages.forEach((message) => this.cable.sendToChannel({ channel: 'TransactionImportChannel' }, message));
-        } catch {
-          // the page was closed before the event was delivered
-        }
-      }, delay);
+  private rebroadcast(messages: unknown[]) {
+    for (const delay of [300, 1000]) {
+      setTimeout(() => this.emit(messages), delay);
     }
   }
 }

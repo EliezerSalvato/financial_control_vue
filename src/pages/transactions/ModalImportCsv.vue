@@ -130,14 +130,18 @@ function resetForm() {
   resetErrors();
 }
 
-// Only rows that came back processed can be reviewed; skipped (already imported) and failed ones have no data.
-watch(finished, (isFinished) => {
-  if (!isFinished || !importId.value || previewRows.value.length === 0) return;
+// Rows can arrive on the cable before the POST returns the import id. `finished` does not
+// change again when that id shows up, so the navigation has to watch both.
+watch(
+  () => Boolean(finished.value && importId.value && previewRows.value.length > 0),
+  (ready) => {
+    if (!ready || !importId.value) return;
 
-  importStore.setPreview(importId.value, previewRows.value);
-  close();
-  void router.push({ name: 'transactionsImport' });
-});
+    importStore.setPreview(importId.value, previewRows.value);
+    close();
+    void router.push({ name: 'transactionsImport' });
+  },
+);
 
 watch(
   () => props.open,
